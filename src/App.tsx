@@ -4,7 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
-import PdfUpload from "./pages/TableUpload";
+import TableUpload from "./pages/TableUpdload";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -17,7 +17,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/pdf-upload" element={<PdfUpload />} />
+          <Route path="/table-upload" element={<TableUpload />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
