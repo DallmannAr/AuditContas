@@ -81,7 +81,7 @@ export default function Login() {
 
             <div className="text-center text-sm animate-fade-in" style={{ animationDelay: "0.4s", animationFillMode: "both" }}>
               <span className="text-muted-foreground">Não tem uma conta? </span>
-              <Link to="/signup" className="text-primary hover:text-accent font-medium transition-colors">
+              <Link to="/" className="text-primary hover:text-accent font-medium transition-colors">
                 Cadastre-se
               </Link>
             </div>

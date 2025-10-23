@@ -1,6 +1,6 @@
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { ValuesCard } from "@/components/ValuesCard";
-import { RecentWorks } from "@/components/RecentWorks";
+import { TableInfoSection } from "@/components/TableInfoSection";
 import { MonthlyReportChart } from "@/components/MonthlyReportChart";
 import { CategoryChart } from "@/components/CategoryChart";
 import { Button } from "@/components/ui/button";
@@ -32,8 +32,11 @@ export default function Home() {
           </div>
 
           {/* Right Column - Recent Works */}
-          <div>
-            <RecentWorks />
+          <div className="space-y-6 ">
+            <TableInfoSection title="Trabalhos Recentes" type="recent"/>
+            <TableInfoSection title="Trabalhos Pagos" type="paid"/>
+            <TableInfoSection title="Trabalhos Pendentes" type="pending"/>
+
           </div>
         </div>
       </div>
