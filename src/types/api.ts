@@ -1,0 +1,93 @@
+// src/types/api.ts
+
+// Response padrão da API
+export interface ApiResponse<T> {
+  success: boolean;
+  data: T;
+  message?: string;
+  errors?: string[];
+}
+
+// Resposta de erro da API C#
+export interface ApiError {
+  message: string;
+}
+
+// Paginação
+export interface PaginatedResponse<T> {
+  items: T[];
+  totalCount: number;
+  pageNumber: number;
+  pageSize: number;
+  totalPages: number;
+}
+
+// ========== AUTENTICAÇÃO ==========
+
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  token: string;
+}
+
+// ========== USUÁRIOS ==========
+
+export interface User {
+  id: number;
+  name: string;
+  email: string;
+  phone?: string;
+  createdAt?: string;
+}
+
+export interface CreateUserRequest {
+  name: string;
+  email: string;
+  phone?: string;
+  password: string;
+  password_confirmation: string;
+}
+
+export interface UpdateUserRequest {
+  name?: string;
+  email?: string;
+  phone?: string;
+  password?: string;
+}
+
+// ========== PROCEDIMENTOS (Futuro) ==========
+
+export interface Procedure {
+  id: string;
+  patientName: string;
+  procedureName: string;
+  date: string;
+  value: number;
+  repasse: number;
+  status: 'pending' | 'paid' | 'cancelled';
+}
+
+
+export interface Patient {
+  id: string;
+  name: string;
+}
+
+// ========== RELATÓRIOS (Futuro) ==========
+
+export interface MonthlyReport {
+  month: string;
+  year: number;
+  totalProcedures: number;
+  totalValue: number;
+  proceduresByStatus: Record<string, number>;
+}
+
+export interface CategoryReport {
+  category: string;
+  count: number;
+  totalValue: number;
+}

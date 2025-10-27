@@ -1,20 +1,29 @@
+// src/pages/Login.tsx
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { LogIn, Mail, Lock } from "lucide-react";
+import { LogIn, Mail, Lock, AlertCircle } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export default function Login() {
-  const navigate = useNavigate();
+  const { login, isLoading } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement authentication logic
-    navigate("/");
+    setError(null);
+
+    try {
+      await login({ email, password });
+    } catch (err: any) {
+      setError(err.message || 'Erro ao fazer login. Verifique suas credenciais.');
+    }
   };
 
   return (
@@ -35,6 +44,13 @@ export default function Login() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">
+            {error && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+
             <div className="space-y-2 animate-fade-in" style={{ animationDelay: "0.1s", animationFillMode: "both" }}>
               <Label htmlFor="email" className="text-sm font-medium">
                 Email
@@ -49,6 +65,8 @@ export default function Login() {
                   onChange={(e) => setEmail(e.target.value)}
                   className="pl-10 bg-background/50 backdrop-blur-sm border-border/50 focus:border-primary transition-all"
                   required
+                  disabled={isLoading}
+                  autoComplete="email"
                 />
               </div>
             </div>
@@ -67,6 +85,8 @@ export default function Login() {
                   onChange={(e) => setPassword(e.target.value)}
                   className="pl-10 bg-background/50 backdrop-blur-sm border-border/50 focus:border-primary transition-all"
                   required
+                  disabled={isLoading}
+                  autoComplete="current-password"
                 />
               </div>
             </div>
@@ -75,8 +95,9 @@ export default function Login() {
               type="submit"
               className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-all duration-300 shadow-lg hover:shadow-xl animate-fade-in"
               style={{ animationDelay: "0.3s", animationFillMode: "both" }}
+              disabled={isLoading}
             >
-              Entrar
+              {isLoading ? "Entrando..." : "Entrar"}
             </Button>
 
             <div className="text-center text-sm animate-fade-in" style={{ animationDelay: "0.4s", animationFillMode: "both" }}>
@@ -90,5 +111,4 @@ export default function Login() {
       </Card>
     </div>
   );
-};
-
+}
