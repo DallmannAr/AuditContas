@@ -65,6 +65,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setUser(currentUser);
           authService.saveUserData(currentUser);
         } else {
+          // Fallback: criar um objeto básico de usuário
           const basicUser: User = {
             id: 0,
             name: '',
