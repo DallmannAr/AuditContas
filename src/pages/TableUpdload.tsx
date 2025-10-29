@@ -46,7 +46,7 @@ export default function TableUpload() {
       <div className="p-8">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
-          <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
+          <Button variant="ghost" size="icon" onClick={() => navigate("/home")}>
             <ArrowLeft className="w-5 h-5" />
           </Button>
           <h1 className="text-3xl font-bold">Upload e Extração de PDF</h1>

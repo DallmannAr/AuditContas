@@ -61,34 +61,22 @@
 
     // ========== PROCEDIMENTOS (Futuro) ==========
 
-    export interface Procedure {
-    id: string;
-    patientName: string;
+    export interface Report {
+    id: number;
+    covenant: string;
+    title: string;
+    patient: string;
     procedureName: string;
     date: string;
-    value: number;
+    dueDate: string;
+    emissionDate: string;
+    register: string;
+    item: string;
+    amount: number;
+    totalValue: number;
+    paidValue: number;
+    pedingValue: number;
+    cardTribute: number;
     repasse: number;
-    status: 'pending' | 'paid' | 'cancelled';
-    }
-
-
-    export interface Patient {
-    id: string;
-    name: string;
-    }
-
-    // ========== RELATÓRIOS (Futuro) ==========
-
-    export interface MonthlyReport {
-    month: string;
-    year: number;
-    totalProcedures: number;
-    totalValue: number;
-    proceduresByStatus: Record<string, number>;
-    }
-
-    export interface CategoryReport {
-    category: string;
-    count: number;
-    totalValue: number;
+    status: 'pending' | 'paid';
     }
