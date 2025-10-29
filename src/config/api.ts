@@ -7,38 +7,27 @@ export const API_CONFIG = {
 export const API_ENDPOINTS = {
   // Autenticação
   auth: {
-    login: '/auth/login',
-    register: '/auth/register',
-    logout: '/auth/logout',
-    refresh: '/auth/refresh',
+    login: 'api/auth/login',
+    register: 'api/auth/register',
+    logout: 'api/auth/logout',
+    refresh: 'api/auth/refresh',
   },
-  // Procedimentos
-  procedures: {
-    list: '/procedures',
-    getById: (id: string) => `/procedures/${id}`,
-    create: '/procedures',
-    update: (id: string) => `/procedures/${id}`,
-    delete: (id: string) => `/procedures/${id}`,
-  },
-  patients: {
-    list: '/patients',
-    getById: (id: string) => `/patients/${id}`,
-    create: '/patients',
-    update: (id: string) => `/patients/${id}`,
-    delete: (id: string) => `/patients/${id}`,
-  },
+
 
   users:{
     list: '/users',
-     getById: (id: number) => `/user/${id}`,
-    create: '/user',
-    update: (id: number) => `/user/${id}`,
-    delete: (id: number) => `/user/${id}`,
+     getById: (id: number) => `api/users/${id}`,
+    create: 'api/users',
+    update: (id: number) => `api/users/${id}`,
+    delete: (id: number) => `api/users/${id}`,
 
   },
   // Relatórios
   reports: {
-    monthly: '/reports/monthly',
-    byCategory: '/reports/category',
+    list: '/reports',
+     getById: (id: number) => `api/reports/${id}`,
+    create: 'api/reports',
+    update: (id: number) => `api/reports/${id}`,
+    delete: (id: number) => `api/reports/${id}`,
   },
 } as const;

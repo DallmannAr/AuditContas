@@ -3,7 +3,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recha
 const data = [
   { name: "Vendas", value: 4500, color: "hsl(var(--chart-1))" },
   { name: "Serviços", value: 3200, color: "hsl(var(--chart-2))" },
-  { name: "Produtos", value: 2800, color: "hsl(var(--chart-4))" },
+  { name: "Produtos", value: 2800, color: "hsl(var(--chart-3))" },
   { name: "Outros", value: 1500, color: "hsl(var(--chart-5))" },
 ];
 
