@@ -2,9 +2,9 @@ import { NavLink, useLocation } from "react-router-dom";
 import {
   Home,
   Upload,
-  Filter,
+  Search,
   Settings,
-  Zap,
+  CircleDollarSign,
 } from "lucide-react";
 import {
   Sidebar,
@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/sidebar";
 
 const mainItems = [
-  { title: "Dashboard", url: "/", icon: Home },
+  { title: "Dashboard", url: "/home", icon: Home },
 ];
 
 const featuresItems = [
@@ -28,10 +28,11 @@ const featuresItems = [
 ];
 
 const toolsItems = [
-  { title: "Filtro", url: "/filter", icon: Filter },
+  { title: "Pesquisa", url: "/search", icon: Search },
+  { title: "Upload de Tabelas", url: "/table-upload", icon: Upload },
 ];
 
-export function MenuSideBar() {
+export function MenuSidebar() {
   const { state } = useSidebar();
   const location = useLocation();
   const currentPath = location.pathname;
@@ -52,12 +53,12 @@ export function MenuSideBar() {
           {!collapsed && (
             <div className="flex items-center gap-2">
               <div className="flex h-6 w-6 items-center justify-center rounded bg-primary text-primary-foreground">
-                <Zap className="h-4 w-4" />
+                <CircleDollarSign className="h-5 w-5" />
               </div>
               <span className="font-bold text-foreground">Dashboard</span>
             </div>
           )}
-          <SidebarTrigger className={collapsed ? "mx-auto" : ""} />
+          <SidebarTrigger className={collapsed ? "mx-auto " : ""} />
         </div>
 
         <SidebarContent>
@@ -91,41 +92,11 @@ export function MenuSideBar() {
             </SidebarGroupContent>
           </SidebarGroup>
 
-          {/* Features Section */}
-          <SidebarGroup>
-            {!collapsed && (
-              <SidebarGroupLabel className="px-4 text-xs font-semibold uppercase text-muted-foreground">
-                Features
-              </SidebarGroupLabel>
-            )}
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {featuresItems.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton
-                      asChild
-                      className={`${
-                        isActive(item.url)
-                          ? "bg-accent text-accent-foreground"
-                          : "hover:bg-muted"
-                      }`}
-                    >
-                      <NavLink to={item.url}>
-                        <item.icon className="h-4 w-4" />
-                        {!collapsed && <span>{item.title}</span>}
-                      </NavLink>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-
           {/* Tools Section */}
           <SidebarGroup>
             {!collapsed && (
               <SidebarGroupLabel className="px-4 text-xs font-semibold uppercase text-muted-foreground">
-                Tools
+                Ferramentas
               </SidebarGroupLabel>
             )}
             <SidebarGroupContent>
@@ -166,7 +137,7 @@ export function MenuSideBar() {
               >
                 <NavLink to="/settings">
                   <Settings className="h-4 w-4" />
-                  {!collapsed && <span>Project Settings</span>}
+                  {!collapsed && <span>Configurações</span>}
                 </NavLink>
               </SidebarMenuButton>
             </SidebarMenuItem>

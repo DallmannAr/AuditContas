@@ -7,12 +7,15 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 
-// Components Screens 
-import Home from "./pages/Home";
-import SignUp from "./pages/SignUp";
-import TableUpload from "./pages/TableUpdload";
-import NotFound from "./pages/NotFound";
-import Login from "./pages/Login";
+// Components Screens
+import Home from "./pages/home";
+import SignUp from "./pages/signUp";
+import TableUpload from "./pages/tableUpload";
+import NotFound from "./pages/notFound";
+import Login from "./pages/login";
+import SettingsScreen from "./pages/settings";
+import { AppProvider } from "./contexts/AppContext";
+import Search from "./pages/search";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -30,35 +33,24 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+      <AppProvider >
         <AuthProvider>
           <Routes>
             {/* Rotas Públicas */}
             <Route path="/login" element={<Login />} />
             <Route path="/" element={<SignUp />} />
-            
-            {/* Rotas Protegidas */}
-            <Route 
-              path="/home" 
-              element={
-                <ProtectedRoute>
-                  <Home />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/table-upload" 
-              element={
-                <ProtectedRoute>
-                  <TableUpload />
-                </ProtectedRoute>
-              } 
-            />
 
-            
+            {/* Rotas Protegidas */}
+            <Route path="/search" element={<Search />} /> 
+            <Route path="/home" element={<Home />} />
+            <Route path="/table-upload" element={<TableUpload />} />
+            <Route path="/settings" element={<SettingsScreen/>} />
+
             {/* Rota 404 */}
-            <Route path="*" element={<NotFound />} />
+            <Route path="*" element={<NotFound />} /> 
           </Routes>
         </AuthProvider>
+      </AppProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

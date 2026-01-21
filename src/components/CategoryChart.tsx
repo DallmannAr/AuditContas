@@ -9,7 +9,7 @@ const data = [
 
 export function CategoryChart() {
   return (
-    <div className="bg-card rounded-lg p-6 border border-border h-full">
+    <div className="bg-card rounded-lg p-6 border border-border">
       <h3 className="text-lg font-semibold mb-4">Distribuição por Categoria</h3>
       <ResponsiveContainer width="100%" height={300}>
         <PieChart>

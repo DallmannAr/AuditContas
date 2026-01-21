@@ -1,6 +1,9 @@
-// src/pages/SignUp.tsx
-import { useState } from "react";
+
+//External Libs
 import { Link } from "react-router-dom";
+
+//Native libs
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

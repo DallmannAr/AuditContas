@@ -48,7 +48,7 @@ export function MonthlyReportChart() {
           <Legend 
             wrapperStyle={{ color: "hsl(var(--foreground))" }}
           />
-          <Bar dataKey="receita" fill="hsl(var(--chart-1))" radius={[8, 8, 0, 0]} />
+          <Bar dataKey="receita" fill="hsl(var(--primary))" radius={[8, 8, 0, 0]} />
           <Bar dataKey="despesa" fill="hsl(var(--chart-3))" radius={[8, 8, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
