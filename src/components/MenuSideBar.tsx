@@ -5,6 +5,7 @@ import {
   Search,
   Settings,
   CircleDollarSign,
+  Crown
 } from "lucide-react";
 import {
   Sidebar,
@@ -19,26 +20,28 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
-const mainItems = [
-  { title: "Dashboard", url: "/home", icon: Home },
-];
-
-const featuresItems = [
-  { title: "Upload de Tabelas", url: "/table-upload", icon: Upload },
-];
-
-const toolsItems = [
-  { title: "Pesquisa", url: "/search", icon: Search },
-  { title: "Upload de Tabelas", url: "/table-upload", icon: Upload },
-];
+import { useTranslation } from '@/lib/i18n/translations';
 
 export function MenuSidebar() {
+
+  const { t } = useTranslation();
   const { state } = useSidebar();
   const location = useLocation();
   const currentPath = location.pathname;
 
   const isActive = (path: string) => currentPath === path;
   const collapsed = state === "collapsed";
+
+  const mainItems = [
+  { title: t.nav.home , url: "/home", icon: Home },
+  { title: t.nav.plans, url: "/plans", icon: Crown,}
+];
+
+const toolsItems = [
+  { title: t.nav.search, url: "/search", icon: Search },
+  { title: t.nav.reports, url: "/table-upload", icon: Upload },
+];
+
 
   return (
     <Sidebar
@@ -96,7 +99,7 @@ export function MenuSidebar() {
           <SidebarGroup>
             {!collapsed && (
               <SidebarGroupLabel className="px-4 text-xs font-semibold uppercase text-muted-foreground">
-                Ferramentas
+                {t.nav.tools}
               </SidebarGroupLabel>
             )}
             <SidebarGroupContent>
@@ -137,7 +140,7 @@ export function MenuSidebar() {
               >
                 <NavLink to="/settings">
                   <Settings className="h-4 w-4" />
-                  {!collapsed && <span>Configurações</span>}
+                  {!collapsed && <span>{t.nav.settings}</span>}
                 </NavLink>
               </SidebarMenuButton>
             </SidebarMenuItem>

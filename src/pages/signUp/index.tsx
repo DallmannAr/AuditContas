@@ -11,7 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { UserPlus, Mail, Lock, User, Phone, AlertCircle } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-
+import { useTranslation } from "@/lib/i18n/translations";
 export default function SignUp() {
   const { signUp, isLoading } = useAuth();
   const [name, setName] = useState("");
@@ -20,6 +20,8 @@ export default function SignUp() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+
+  const { t } = useTranslation();
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,10 +60,10 @@ export default function SignUp() {
             <UserPlus className="w-8 h-8 text-white" />
           </div>
           <CardTitle className="text-3xl font-bold bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent">
-            Crie sua conta
+            {t.auth.signUpTitle}
           </CardTitle>
           <CardDescription className="text-base">
-            Preencha os dados para começar
+            {t.auth.signUpMessage}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -75,14 +77,14 @@ export default function SignUp() {
 
             <div className="space-y-2 animate-fade-in" style={{ animationDelay: "0.1s", animationFillMode: "both" }}>
               <Label htmlFor="name" className="text-sm font-medium">
-                Nome completo
+                {t.auth.name}
               </Label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
                   id="name"
                   type="text"
-                  placeholder="Seu nome"
+                  placeholder={t.auth.name}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   className="pl-10 bg-background/50 backdrop-blur-sm border-border/50 focus:border-accent transition-all"
@@ -95,14 +97,14 @@ export default function SignUp() {
 
             <div className="space-y-2 animate-fade-in" style={{ animationDelay: "0.2s", animationFillMode: "both" }}>
               <Label htmlFor="email" className="text-sm font-medium">
-                Email
+                {t.auth.email}
               </Label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
                   id="email"
                   type="email"
-                  placeholder="seu@email.com"
+                  placeholder={t.auth.emailPlaceholder}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="pl-10 bg-background/50 backdrop-blur-sm border-border/50 focus:border-accent transition-all"
@@ -115,7 +117,7 @@ export default function SignUp() {
 
             <div className="space-y-2 animate-fade-in" style={{ animationDelay: "0.25s", animationFillMode: "both" }}>
               <Label htmlFor="phone" className="text-sm font-medium">
-                Telefone (opcional)
+                {t.auth.phone} 
               </Label>
               <div className="relative">
                 <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -134,7 +136,7 @@ export default function SignUp() {
 
             <div className="space-y-2 animate-fade-in" style={{ animationDelay: "0.3s", animationFillMode: "both" }}>
               <Label htmlFor="password" className="text-sm font-medium">
-                Senha
+                {t.auth.password}
               </Label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -155,7 +157,7 @@ export default function SignUp() {
 
             <div className="space-y-2 animate-fade-in" style={{ animationDelay: "0.4s", animationFillMode: "both" }}>
               <Label htmlFor="confirmPassword" className="text-sm font-medium">
-                Confirmar senha
+                {t.auth.confirmPassword}
               </Label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -180,7 +182,7 @@ export default function SignUp() {
               style={{ animationDelay: "0.5s", animationFillMode: "both" }}
               disabled={isLoading}
             >
-              {isLoading ? "Criando conta..." : "Criar conta"}
+              {isLoading ? (t.auth.signupState): (t.auth.signupButton)}
             </Button>
 
             <div className="text-center text-sm animate-fade-in" style={{ animationDelay: "0.6s", animationFillMode: "both" }}>

@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { AppProvider } from "./contexts/AppContext";
 
 // Components Screens
 import Home from "./pages/home";
@@ -13,9 +14,10 @@ import SignUp from "./pages/signUp";
 import TableUpload from "./pages/tableUpload";
 import NotFound from "./pages/notFound";
 import Login from "./pages/login";
-import SettingsScreen from "./pages/settings";
-import { AppProvider } from "./contexts/AppContext";
+import Settings from "./pages/settings";
 import Search from "./pages/search";
+import Plans from "./pages/plans";
+
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -44,8 +46,8 @@ const App = () => (
             <Route path="/search" element={<Search />} /> 
             <Route path="/home" element={<Home />} />
             <Route path="/table-upload" element={<TableUpload />} />
-            <Route path="/settings" element={<SettingsScreen/>} />
-
+            <Route path="/settings" element={<Settings/>} />
+            <Route path="/plans" element={<Plans />} />
             {/* Rota 404 */}
             <Route path="*" element={<NotFound />} /> 
           </Routes>

@@ -7,9 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus, Search, Table } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from '@/lib/i18n/translations';
+
 
 export default function Home() {
   const navigate = useNavigate();
+
+  const { t } = useTranslation();
 
   return (
     <DashboardLayout>
@@ -22,13 +26,13 @@ export default function Home() {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input 
                 type="search"
-                placeholder="Pesquisar..."
+                placeholder={t.nav.search} 
                 className="pl-10 w-64"
               />
             </div>
             <Button onClick={() => navigate("/table-upload")} className="gap-2">
               <Plus className="w-4 h-4" />
-              Criar
+              {t.common.create}
             </Button>
           </div>
         </div>

@@ -102,7 +102,7 @@ export const PLANS: Record<SubscriptionPlan, PlanDetails> = {
   },
 };
 
-export const overage_PHOTO_PRICE = 1.50; // R$ por foto excedente
+export const OVERAGE_PHOTO_PRICE = 1.50; // R$ por foto excedente
 
 export const PLAN_ORDER: SubscriptionPlan[] = [
   'basic',

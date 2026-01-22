@@ -1,121 +1,255 @@
+// src/pages/Plans/index.tsx
+import { useState, useEffect } from 'react';
 import { DashboardLayout } from '@/components/DashboardLayout';
-import { PlanCard } from '@/components/subscription/PlanCard';
-import { UsageProgressBar } from '@/components/subscription/UsageProgressBar';
-import { useSubscription } from '@/hooks/useSubscription';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Crown, HelpCircle } from 'lucide-react';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
+import { Check, Zap, Crown, TrendingUp } from 'lucide-react';
+import { useTranslation } from '@/lib/i18n/translations';
+import { PLANS, PLAN_ORDER, calculateUsageStats, OVERAGE_PHOTO_PRICE } from '@/types/subscription';
+import type { UserSubscription, SubscriptionPlan } from '@/types/subscription';
+import { subscriptionService } from '@/services/subscriptionService';
+import { toast } from 'sonner';
 
 export default function Plans() {
-  const { plans, activeSubscription, usageStatus, loading, subscribeToPlan } = useSubscription();
+  const { t } = useTranslation();
+  const [subscription, setSubscription] = useState<UserSubscription | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [upgrading, setUpgrading] = useState(false);
 
-  const faqs = [
-    {
-      question: 'Como funciona a contagem de fotos?',
-      answer: 'Cada imagem enviada para processamento de OCR conta como 1 foto. Arquivos PDF e Excel não contam para o limite de fotos.',
-    },
-    {
-      question: 'O que acontece se eu atingir o limite?',
-      answer: 'Nos planos Foto 60, 100 e 150, o OCR será bloqueado até que você faça upgrade. No plano Foto 200, você pode optar por pagar R$ 1,50 por foto excedente.',
-    },
-    {
-      question: 'Posso fazer upgrade no meio do mês?',
-      answer: 'Sim! Ao fazer upgrade, seu novo limite é aplicado imediatamente e o uso já realizado é mantido. O valor do novo plano será cobrado a partir da próxima mensalidade.',
-    },
-    {
-      question: 'Como funciona o plano Básico?',
-      answer: 'O plano Básico permite apenas importação de dados via Excel e PDF. Não inclui processamento de fotos com OCR.',
-    },
-    {
-      question: 'As fotos excedentes são cobradas automaticamente?',
-      answer: 'Não. No plano Foto 200, você precisa aceitar explicitamente a cobrança por fotos excedentes antes de continuar usando o OCR além do limite.',
-    },
-  ];
+  useEffect(() => {
+    loadSubscription();
+  }, []);
+
+  const loadSubscription = async () => {
+    try {
+      const data = await subscriptionService.getCurrentSubscription();
+      setSubscription(data);
+    } catch (error) {
+      console.error('Erro ao carregar assinatura:', error);
+      toast.error('Erro ao carregar dados da assinatura');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUpgrade = async (newPlan: SubscriptionPlan) => {
+    if (!subscription) return;
+
+    if (subscription.plan === newPlan) {
+      toast.info('Você já está neste plano');
+      return;
+    }
+
+    // Verificar se é downgrade
+    const currentIndex = PLAN_ORDER.indexOf(subscription.plan);
+    const newIndex = PLAN_ORDER.indexOf(newPlan);
+
+    if (newIndex < currentIndex) {
+      toast.error('Não é possível fazer downgrade. Entre em contato com o suporte.');
+      return;
+    }
+
+    setUpgrading(true);
+
+    try {
+      const updated = await subscriptionService.upgradePlan(newPlan);
+      setSubscription(updated);
+      toast.success('Plano atualizado com sucesso!');
+    } catch (error: any) {
+      console.error('Erro ao fazer upgrade:', error);
+      toast.error(error.response?.data?.message || 'Erro ao atualizar plano');
+    } finally {
+      setUpgrading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <DashboardLayout>
+        <div className="flex items-center justify-center h-96">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-muted-foreground">{t.common.loading}</p>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  const stats = subscription ? calculateUsageStats(subscription) : null;
 
   return (
     <DashboardLayout>
-      <div className="space-y-8 max-w-6xl mx-auto">
+      <div className="p-8">
         {/* Header */}
-        <div className="text-center space-y-2">
-          <div className="inline-flex items-center gap-2 text-primary">
-            <Crown className="h-6 w-6" />
-            <span className="text-sm font-medium uppercase tracking-wide">Planos</span>
-          </div>
-          <h1 className="text-3xl font-bold tracking-tight">
-            Escolha o plano ideal para você
-          </h1>
-          <p className="text-muted-foreground max-w-xl mx-auto">
-            Todos os planos incluem acesso completo ao dashboard, relatórios e suporte. 
-            A diferença está na quantidade de fotos processadas com OCR.
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold mb-2">{t.plans.title}</h1>
+          <p className="text-muted-foreground">
+            Escolha o plano ideal para suas necessidades
           </p>
         </div>
 
-        {/* Current usage =
-        {usageStatus && (
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-lg">Seu uso atual</CardTitle>
+        {/* Current Usage */}
+        {subscription && stats && (
+          <Card className="mb-8">
+            <CardHeader>
+              <CardTitle>{t.plans.currentPlan}</CardTitle>
+              <CardDescription>
+                Válido até {new Date(subscription.endDate).toLocaleDateString()}
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              <UsageProgressBar usageStatus={usageStatus} />
+              <div className="space-y-4">
+                <div>
+                  <div className="flex justify-between mb-2">
+                    <span className="font-medium">{t.plans.photosUsed}</span>
+                    <span className="text-muted-foreground">
+                      {stats.photosUsed} / {stats.photoLimit}
+                    </span>
+                  </div>
+                  <Progress 
+                    value={stats.percentage} 
+                    className={`h-2 ${stats.percentage >= 80 ? 'bg-orange-200' : ''}`}
+                  />
+                  <div className="flex justify-between mt-1 text-sm text-muted-foreground">
+                    <span>{stats.remainingPhotos} fotos restantes</span>
+                    <span>{stats.percentage.toFixed(0)}%</span>
+                  </div>
+                </div>
+
+                {stats.overagePhotos > 0 && (
+                  <div className="p-4 bg-primary/10 rounded-lg border border-primary/20">
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <div className="font-semibold text-primary">
+                          {t.plans.overagePhotos}
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                          {stats.overagePhotos} fotos × R$ {OVERAGE_PHOTO_PRICE.toFixed(2)}
+                        </div>
+                      </div>
+                      <div className="text-2xl font-bold text-primary">
+                        R$ {(stats.overagePhotos * OVERAGE_PHOTO_PRICE).toFixed(2)}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
             </CardContent>
           </Card>
         )}
 
-        */}
+        {/* Plans Grid */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {PLAN_ORDER.map((planId) => {
+            const plan = PLANS[planId];
+            const isCurrentPlan = subscription?.plan === planId;
+            const currentIndex = subscription ? PLAN_ORDER.indexOf(subscription.plan) : -1;
+            const planIndex = PLAN_ORDER.indexOf(planId);
+            const isUpgrade = planIndex > currentIndex;
+            const isDowngrade = planIndex < currentIndex;
 
-        {/* Plans grid 
-        {loading ? (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-            {[...Array(5)].map((_, i) => (
-              <Skeleton key={i} className="h-[400px]" />
-            ))}
-          </div>
-        ) : (
+            return (
+              <Card
+                key={planId}
+                className={`relative ${
+                  isCurrentPlan
+                    ? 'border-primary border-2 shadow-lg'
+                    : plan.recommended
+                    ? 'border-primary/50'
+                    : ''
+                }`}
+              >
+                {plan.recommended && !isCurrentPlan && (
+                  <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary">
+                    <Crown className="w-3 h-3 mr-1" />
+                    {t.plans.recommended}
+                  </Badge>
+                )}
 
-        */}
+                {isCurrentPlan && (
+                  <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-green-500">
+                    <Check className="w-3 h-3 mr-1" />
+                    Plano Atual
+                  </Badge>
+                )}
 
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-            {plans.map((plan) => (
-              <PlanCard
-                key={plan.id}
-                plan={plan}
-                isCurrentPlan={plan.id === activeSubscription?.plan_id}
-                isRecommended={plan.slug === 'foto-100'}
-                onSelect={subscribeToPlan}
-                loading={loading}
-              />
-            ))}
-          </div>
-      
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    {plan.photoLimit === 0 && <Zap className="w-5 h-5" />}
+                    {plan.photoLimit > 0 && <TrendingUp className="w-5 h-5" />}
+                    {plan.name}
+                  </CardTitle>
+                  <CardDescription>
+                    {plan.photoLimit === 0
+                      ? 'Sem OCR de fotos'
+                      : `${plan.photoLimit} fotos por mês`}
+                  </CardDescription>
+                </CardHeader>
 
-        {/* FAQ */}
-        <Card>
+                <CardContent className="space-y-6">
+                  {/* Price */}
+                  <div>
+                    <div className="text-4xl font-bold">
+                      R$ {plan.price}
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      {t.plans.perMonth}
+                    </div>
+                  </div>
+
+                  {/* Features */}
+                  <div className="space-y-3">
+                    {plan.features.map((feature, index) => (
+                      <div key={index} className="flex items-start gap-2">
+                        <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                        <span className="text-sm">{feature}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Action Button */}
+                  <Button
+                    className="w-full"
+                    variant={isCurrentPlan ? 'outline' : isUpgrade ? 'default' : 'ghost'}
+                    disabled={isCurrentPlan || isDowngrade || upgrading}
+                    onClick={() => handleUpgrade(planId)}
+                  >
+                    {upgrading && 'Processando...'}
+                    {!upgrading && isCurrentPlan && 'Plano Atual'}
+                    {!upgrading && isUpgrade && t.plans.selectPlan}
+                    {!upgrading && isDowngrade && 'Indisponível'}
+                  </Button>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+
+        {/* Excess Photos Info */}
+        <Card className="mt-8 border-primary/30 bg-primary/5">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <HelpCircle className="h-5 w-5" />
-              Perguntas Frequentes
+              <TrendingUp className="w-5 h-5" />
+              Sobre Fotos Excedentes
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <Accordion type="single" collapsible className="w-full">
-              {faqs.map((faq, index) => (
-                <AccordionItem key={index} value={`item-${index}`}>
-                  <AccordionTrigger className="text-left">
-                    {faq.question}
-                  </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground">
-                    {faq.answer}
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
+          <CardContent className="space-y-3 text-sm">
+            <p>
+              <strong>Plano Foto 200:</strong> Após usar suas 200 fotos mensais, 
+              você pode continuar usando o OCR pagando R$ {OVERAGE_PHOTO_PRICE.toFixed(2)} por foto adicional.
+            </p>
+            <p className="text-muted-foreground">
+              • As fotos excedentes são cobradas à parte na sua fatura mensal
+            </p>
+            <p className="text-muted-foreground">
+              • Você precisa aceitar explicitamente usar fotos excedentes
+            </p>
+            <p className="text-muted-foreground">
+              • Esta opção está disponível apenas no plano Foto 200
+            </p>
           </CardContent>
         </Card>
       </div>

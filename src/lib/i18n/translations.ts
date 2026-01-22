@@ -29,14 +29,18 @@ export interface Translations {
     plans: string;
     tableUpload: string;
     reports: string;
+    tools: string;
   };
   
   // Auth
   auth: {
+    welcomeMessage: string;
+    welcomeTitle: string;
     login: string;
     signup: string;
     logout: string;
     email: string;
+    emailPlaceholder: string;
     password: string;
     name: string;
     phone: string;
@@ -45,7 +49,11 @@ export interface Translations {
     noAccount: string;
     hasAccount: string;
     loginButton: string;
+    loginState: string;
     signupButton: string;
+    signupState: string;
+    signUpTitle: string;
+    signUpMessage: string;
   };
   
   // Settings
@@ -76,8 +84,8 @@ export interface Translations {
     perMonth: string;
     selectPlan: string;
     recommended: string;
-    excessPhotos: string;
-    excessPhotoPrice: string;
+   overagePhotos: string;
+    overagePhotoPrice: string;
   };
   
   // OCR
@@ -135,21 +143,29 @@ export const translations: Record<Language, Translations> = {
       plans: 'Planos',
       tableUpload: 'Upload de Tabelas',
       reports: 'Relatórios',
+      tools: 'Ferramentas',
     },
     auth: {
+      welcomeMessage: 'Entre com suas credenciais para continuar',
+      welcomeTitle:  'Bem-vindo de volta',
       login: 'Entrar',
       signup: 'Cadastrar',
       logout: 'Sair',
       email: 'Email',
+      emailPlaceholder: 'seu@email.com',
       password: 'Senha',
-      name: 'Nome',
+      name: 'Nome completo',
       phone: 'Telefone',
       confirmPassword: 'Confirmar Senha',
       forgotPassword: 'Esqueceu a senha?',
       noAccount: 'Não tem uma conta?',
       hasAccount: 'Já tem uma conta?',
       loginButton: 'Entrar',
+      loginState: 'Entrando...',
       signupButton: 'Criar conta',
+      signupState: 'Criando conta...',
+      signUpTitle: 'Crie sua conta',
+      signUpMessage: 'Preencha os dados pra começar'
     },
     settings: {
       title: 'Configurações',
@@ -176,8 +192,8 @@ export const translations: Record<Language, Translations> = {
       perMonth: 'por mês',
       selectPlan: 'Selecionar Plano',
       recommended: 'Recomendado',
-      excessPhotos: 'Fotos Excedentes',
-      excessPhotoPrice: 'R$ 1,50 por foto adicional',
+     overagePhotos: 'Fotos Excedentes',
+      overagePhotoPrice: 'R$ 1,50 por foto adicional',
     },
     ocr: {
       title: 'Extração de Tabelas',
@@ -230,21 +246,31 @@ export const translations: Record<Language, Translations> = {
       plans: 'Plans',
       tableUpload: 'Table Upload',
       reports: 'Reports',
+      tools: 'Tools',
+
     },
     auth: {
+      welcomeMessage: 'Enter your credentials to continue.',
+      welcomeTitle: 'Welcome back',
       login: 'Login',
       signup: 'Sign Up',
       logout: 'Logout',
       email: 'Email',
+      emailPlaceholder: 'your@email.com',
       password: 'Password',
-      name: 'Name',
+      name: 'Full name',
       phone: 'Phone',
       confirmPassword: 'Confirm Password',
       forgotPassword: 'Forgot password?',
       noAccount: "Don't have an account?",
       hasAccount: 'Already have an account?',
       loginButton: 'Sign In',
+      loginState: 'Logging in...',
       signupButton: 'Create Account',
+      signupState: 'Creating account...',
+       signUpTitle: 'Create your account',
+      signUpMessage: 'Fill in the details to get started.'
+
     },
     settings: {
       title: 'Settings',
@@ -271,8 +297,8 @@ export const translations: Record<Language, Translations> = {
       perMonth: 'per month',
       selectPlan: 'Select Plan',
       recommended: 'Recommended',
-      excessPhotos: 'Excess Photos',
-      excessPhotoPrice: '$0.30 per additional photo',
+     overagePhotos: 'Excess Photos',
+      overagePhotoPrice: '$0.30 per additional photo',
     },
     ocr: {
       title: 'Table Extraction',
@@ -325,21 +351,29 @@ export const translations: Record<Language, Translations> = {
       plans: 'Planes',
       tableUpload: 'Subir Tablas',
       reports: 'Informes',
+      tools: 'Herramientas'
     },
     auth: {
+      welcomeTitle: 'Bienvenido de nuevo',
+      welcomeMessage: 'Ingrese sus credenciales para continuar.',
       login: 'Iniciar sesión',
       signup: 'Registrarse',
       logout: 'Cerrar sesión',
       email: 'Correo electrónico',
+      emailPlaceholder: 'su@email.com',
       password: 'Contraseña',
-      name: 'Nombre',
+      name: 'Nombre completo',
       phone: 'Teléfono',
       confirmPassword: 'Confirmar Contraseña',
       forgotPassword: '¿Olvidaste tu contraseña?',
       noAccount: '¿No tienes una cuenta?',
       hasAccount: '¿Ya tienes una cuenta?',
       loginButton: 'Entrar',
+      loginState: 'Entrando...',
       signupButton: 'Crear cuenta',
+      signUpTitle: 'Crea tu cuenta',
+      signupState: 'Creando cuenta...',
+      signUpMessage: 'Complete los datos para comenzar.'
     },
     settings: {
       title: 'Configuración',
@@ -366,8 +400,8 @@ export const translations: Record<Language, Translations> = {
       perMonth: 'por mes',
       selectPlan: 'Seleccionar Plan',
       recommended: 'Recomendado',
-      excessPhotos: 'Fotos Excedentes',
-      excessPhotoPrice: '$0,30 por foto adicional',
+     overagePhotos: 'Fotos Excedentes',
+      overagePhotoPrice: '$0,30 por foto adicional',
     },
     ocr: {
       title: 'Extracción de Tablas',

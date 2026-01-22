@@ -8,12 +8,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { LogIn, Mail, Lock, AlertCircle } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useTranslation } from '@/lib/i18n/translations';
 
 export default function Login() {
   const { login, isLoading } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+
+  const { t } = useTranslation();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,10 +39,10 @@ export default function Login() {
             <LogIn className="w-8 h-8 text-white" />
           </div>
           <CardTitle className="text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-            Bem-vindo de volta
+            {t.auth.welcomeTitle}
           </CardTitle>
           <CardDescription className="text-base">
-            Entre com suas credenciais para continuar
+            {t.auth.welcomeMessage}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -60,7 +63,7 @@ export default function Login() {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="seu@email.com"
+                  placeholder={t.auth.emailPlaceholder}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="pl-10 bg-background/50 backdrop-blur-sm border-border/50 focus:border-primary transition-all"
@@ -73,7 +76,7 @@ export default function Login() {
 
             <div className="space-y-2 animate-fade-in" style={{ animationDelay: "0.2s", animationFillMode: "both" }}>
               <Label htmlFor="password" className="text-sm font-medium">
-                Senha
+                {t.auth.password}
               </Label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -97,13 +100,13 @@ export default function Login() {
               style={{ animationDelay: "0.3s", animationFillMode: "both" }}
               disabled={isLoading}
             >
-              {isLoading ? "Entrando..." : "Entrar"}
+              {isLoading ? (t.auth.loginState) : (t.auth.loginButton)}
             </Button>
 
             <div className="text-center text-sm animate-fade-in" style={{ animationDelay: "0.4s", animationFillMode: "both" }}>
-              <span className="text-muted-foreground">Não tem uma conta? </span>
+              <span className="text-muted-foreground">{t.auth.noAccount} </span>
               <Link to="/" className="text-primary hover:text-accent font-medium transition-colors">
-                Cadastre-se
+                {t.auth.signup}
               </Link>
             </div>
           </form>
