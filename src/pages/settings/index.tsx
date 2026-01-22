@@ -19,20 +19,6 @@ const Settings: React.FC = () => {
 
   const handleThemeChange = (theme: 'light' | 'dark' | 'system') => {
     updateSettings({ theme });
-    
-    // Apply theme to document
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else if (theme === 'light') {
-      document.documentElement.classList.remove('dark');
-    } else {
-      // System preference
-      if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
-    }
   };
 
   const handleLanguageChange = (language: Language) => {
