@@ -19,6 +19,7 @@ export interface Translations {
     previous: string;
     confirm: string;
     close: string;
+    unavailable: string;
   };
   
   // Navigation
@@ -84,8 +85,9 @@ export interface Translations {
     perMonth: string;
     selectPlan: string;
     recommended: string;
-   overagePhotos: string;
+    overagePhotos: string;
     overagePhotoPrice: string;
+    plansDescription: string;
   };
   
   // OCR
@@ -103,10 +105,12 @@ export interface Translations {
     limitReached: string;
     upgradeRequired: string;
     warningLimit: string;
+    
   };
   
   // Usage warnings
   usage: {
+    dueLimit: string;
     warning80Title: string;
     warning80Description: string;
     limitReachedTitle: string;
@@ -115,6 +119,8 @@ export interface Translations {
     continueWithExcess: string;
     excessConfirmTitle: string;
     excessConfirmDescription: string;
+    photos: string;
+    coin: string;   
   };
 }
 
@@ -135,6 +141,7 @@ export const translations: Record<Language, Translations> = {
       previous: 'Anterior',
       confirm: 'Confirmar',
       close: 'Fechar',
+      unavailable: 'Indisponível'
     },
     nav: {
       home: 'Início',
@@ -192,8 +199,10 @@ export const translations: Record<Language, Translations> = {
       perMonth: 'por mês',
       selectPlan: 'Selecionar Plano',
       recommended: 'Recomendado',
-     overagePhotos: 'Fotos Excedentes',
+      overagePhotos: 'Fotos Excedentes',
       overagePhotoPrice: 'R$ 1,50 por foto adicional',
+      plansDescription: 'Escolha o plano ideal para suas necessidades',
+
     },
     ocr: {
       title: 'Extração de Tabelas',
@@ -211,6 +220,7 @@ export const translations: Record<Language, Translations> = {
       warningLimit: 'Atenção: Limite Próximo',
     },
     usage: {
+      dueLimit: 'Valido até',
       warning80Title: 'Limite de Fotos Próximo',
       warning80Description: 'Você usou 80% do seu plano mensal. Considere fazer upgrade.',
       limitReachedTitle: 'Limite de Fotos Atingido',
@@ -219,6 +229,8 @@ export const translations: Record<Language, Translations> = {
       continueWithExcess: 'Continuar com Fotos Excedentes',
       excessConfirmTitle: 'Usar Fotos Excedentes?',
       excessConfirmDescription: 'Cada foto adicional custará R$ 1,50. Você aceita?',
+      photos: 'Fotos',
+      coin: 'R$',
     },
   },
   
@@ -238,6 +250,7 @@ export const translations: Record<Language, Translations> = {
       previous: 'Previous',
       confirm: 'Confirm',
       close: 'Close',
+      unavailable: 'Unavailable'
     },
     nav: {
       home: 'Home',
@@ -297,8 +310,9 @@ export const translations: Record<Language, Translations> = {
       perMonth: 'per month',
       selectPlan: 'Select Plan',
       recommended: 'Recommended',
-     overagePhotos: 'Excess Photos',
+      overagePhotos: 'Excess Photos',
       overagePhotoPrice: '$0.30 per additional photo',
+      plansDescription: 'Choose the ideal plan for your needs',
     },
     ocr: {
       title: 'Table Extraction',
@@ -316,6 +330,7 @@ export const translations: Record<Language, Translations> = {
       warningLimit: 'Warning: Limit Near',
     },
     usage: {
+      dueLimit: 'Valid until',
       warning80Title: 'Photo Limit Near',
       warning80Description: "You've used 80% of your monthly plan. Consider upgrading.",
       limitReachedTitle: 'Photo Limit Reached',
@@ -324,6 +339,8 @@ export const translations: Record<Language, Translations> = {
       continueWithExcess: 'Continue with Excess Photos',
       excessConfirmTitle: 'Use Excess Photos?',
       excessConfirmDescription: 'Each additional photo will cost $0.30. Do you accept?',
+      photos: 'Photos',
+      coin: '$',
     },
   },
   
@@ -343,6 +360,8 @@ export const translations: Record<Language, Translations> = {
       previous: 'Anterior',
       confirm: 'Confirmar',
       close: 'Cerrar',
+      unavailable: 'Indisponible'
+
     },
     nav: {
       home: 'Inicio',
@@ -400,8 +419,9 @@ export const translations: Record<Language, Translations> = {
       perMonth: 'por mes',
       selectPlan: 'Seleccionar Plan',
       recommended: 'Recomendado',
-     overagePhotos: 'Fotos Excedentes',
+      overagePhotos: 'Fotos Excedentes',
       overagePhotoPrice: '$0,30 por foto adicional',
+      plansDescription: 'Elige el plan ideal para tus necesidades',
     },
     ocr: {
       title: 'Extracción de Tablas',
@@ -419,6 +439,7 @@ export const translations: Record<Language, Translations> = {
       warningLimit: 'Atención: Límite Próximo',
     },
     usage: {
+      dueLimit: 'Válida hasta',
       warning80Title: 'Límite de Fotos Próximo',
       warning80Description: 'Has usado el 80% de tu plan mensual. Considera actualizar.',
       limitReachedTitle: 'Límite de Fotos Alcanzado',
@@ -427,6 +448,8 @@ export const translations: Record<Language, Translations> = {
       continueWithExcess: 'Continuar con Fotos Excedentes',
       excessConfirmTitle: '¿Usar Fotos Excedentes?',
       excessConfirmDescription: 'Cada foto adicional costará $0,30. ¿Aceptas?',
+      photos: 'Fotos', 
+      coin: '$',
     },
   },
 };

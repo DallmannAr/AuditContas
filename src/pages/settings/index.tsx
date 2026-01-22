@@ -115,6 +115,10 @@ const Settings: React.FC = () => {
                     <p className="text-sm text-muted-foreground">{user.phone}</p>
                   )}
                 </div>
+                <div> 
+                    <p className="font-medium text-foreground">{t.plans.currentPlan}</p>
+                  <p className="text-sm text-muted-foreground">{user.email}</p>
+                </div>
                 <Button variant="outline" onClick={handleLogout}>
                   <LogOut className="h-4 w-4 mr-2" />
                   {t.auth.logout}

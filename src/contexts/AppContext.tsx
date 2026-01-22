@@ -1,5 +1,8 @@
-import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useCallback, ReactNode, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
+import { subscriptionService } from '@/services/subscriptionService';
+import type { UserSubscription, UsageStats, SubscriptionPlan } from '@/types/subscription';
+import { calculateUsageStats } from '@/types/subscription';
 
 interface User {
   id: string;
@@ -21,6 +24,18 @@ interface AppContextType {
   setUser: (user: User | null) => void;
   isAuthenticated: boolean;
   
+  //Subscription State
+  subscription: UserSubscription | null;
+  usageStats: UsageStats | null;
+  loadingSubscription: boolean;
+  refreshSubscription: () => Promise<void>;
+
+
+  //Subscription Helpers
+  canUseOCR: () => Promise<boolean>;
+  registerPhotoUsage: () => Promise<void>;
+  upgradePlan: (newPlan: SubscriptionPlan) => Promise<void>;
+
   // Settings
   settings: AppSettings;
   updateSettings: (settings: Partial<AppSettings>) => void;
@@ -34,7 +49,7 @@ interface AppContextType {
   showError: (title: string, description?: string) => void;
   showWarning: (title: string, description?: string) => void;
   showInfo: (title: string, description?: string) => void;
-  
+
   // Auth helpers
   login: (user: User, token: string) => void;
   logout: () => void;
@@ -56,11 +71,18 @@ interface AppProviderProps {
 export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const { toast } = useToast();
   
+  //User State
   const [user, setUser] = useState<User | null>(() => {
     const savedUser = localStorage.getItem('user');
     return savedUser ? JSON.parse(savedUser) : null;
   });
   
+  //Subscription State
+  const [subscription, setSubscription] = useState<UserSubscription | null>(null);
+  const [usageStats, setUsageStats] = useState<UsageStats | null>(null)
+  const [loadingSubscription, setLoadingSubscription] = useState(false)
+
+  //Setting State
   const [settings, setSettings] = useState<AppSettings>(() => {
     const savedSettings = localStorage.getItem('appSettings');
     return savedSettings ? { ...defaultSettings, ...JSON.parse(savedSettings) } : defaultSettings;
@@ -70,6 +92,17 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
 
   const isAuthenticated = !!user;
 
+  //Subscription load when logging
+  useEffect(() => {
+    if(isAuthenticated) {
+      refreshSubscription();
+    } else {
+      setSubscription(null);
+      setUsageStats(null);
+    }
+  }, [isAuthenticated])
+
+  
   const updateSettings = useCallback((newSettings: Partial<AppSettings>) => {
     setSettings(prev => {
       const updated = { ...prev, ...newSettings };

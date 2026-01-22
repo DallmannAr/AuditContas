@@ -86,8 +86,8 @@ export default function Plans() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">{t.plans.title}</h1>
-          <p className="text-muted-foreground">
-            Escolha o plano ideal para suas necessidades
+          <p  className="text-muted-foreground">
+            {t.plans.plansDescription}
           </p>
         </div>
 
@@ -97,7 +97,7 @@ export default function Plans() {
             <CardHeader>
               <CardTitle>{t.plans.currentPlan}</CardTitle>
               <CardDescription>
-                Válido até {new Date(subscription.endDate).toLocaleDateString()}
+                {t.usage.dueLimit} {new Date(subscription.endDate).toLocaleDateString()}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -114,7 +114,7 @@ export default function Plans() {
                     className={`h-2 ${stats.percentage >= 80 ? 'bg-orange-200' : ''}`}
                   />
                   <div className="flex justify-between mt-1 text-sm text-muted-foreground">
-                    <span>{stats.remainingPhotos} fotos restantes</span>
+                    <span>{stats.remainingPhotos} {t.plans.photosRemaining}</span>
                     <span>{stats.percentage.toFixed(0)}%</span>
                   </div>
                 </div>
@@ -127,7 +127,7 @@ export default function Plans() {
                           {t.plans.overagePhotos}
                         </div>
                         <div className="text-sm text-muted-foreground">
-                          {stats.overagePhotos} fotos × R$ {OVERAGE_PHOTO_PRICE.toFixed(2)}
+                          {stats.overagePhotos} {t.usage.photos} × R$ {OVERAGE_PHOTO_PRICE.toFixed(2)}
                         </div>
                       </div>
                       <div className="text-2xl font-bold text-primary">
@@ -172,7 +172,7 @@ export default function Plans() {
                 {isCurrentPlan && (
                   <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-green-500">
                     <Check className="w-3 h-3 mr-1" />
-                    Plano Atual
+                    {t.plans.currentPlan}
                   </Badge>
                 )}
 
@@ -184,8 +184,8 @@ export default function Plans() {
                   </CardTitle>
                   <CardDescription>
                     {plan.photoLimit === 0
-                      ? 'Sem OCR de fotos'
-                      : `${plan.photoLimit} fotos por mês`}
+                      ? (t.usage.limitReachedTitle)
+                      : `${plan.photoLimit}  ${t.plans.perMonth}`}
                   </CardDescription>
                 </CardHeader>
 
@@ -193,7 +193,7 @@ export default function Plans() {
                   {/* Price */}
                   <div>
                     <div className="text-4xl font-bold">
-                      R$ {plan.price}
+                      {t.usage.coin} {plan.price}
                     </div>
                     <div className="text-sm text-muted-foreground">
                       {t.plans.perMonth}
@@ -217,10 +217,10 @@ export default function Plans() {
                     disabled={isCurrentPlan || isDowngrade || upgrading}
                     onClick={() => handleUpgrade(planId)}
                   >
-                    {upgrading && 'Processando...'}
-                    {!upgrading && isCurrentPlan && 'Plano Atual'}
+                    {upgrading && t.common.loading}
+                    {!upgrading && isCurrentPlan && t.plans.currentPlan}
                     {!upgrading && isUpgrade && t.plans.selectPlan}
-                    {!upgrading && isDowngrade && 'Indisponível'}
+                    {!upgrading && isDowngrade && t.common.unavailable}
                   </Button>
                 </CardContent>
               </Card>
@@ -228,7 +228,13 @@ export default function Plans() {
           })}
         </div>
 
-        {/* Excess Photos Info */}
+
+          
+        {/* Excess Photos Info 
+
+          We need to translate that after the testing phase
+
+          */}
         <Card className="mt-8 border-primary/30 bg-primary/5">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -248,7 +254,7 @@ export default function Plans() {
               • Você precisa aceitar explicitamente usar fotos excedentes
             </p>
             <p className="text-muted-foreground">
-              • Esta opção está disponível apenas no plano Foto 200
+              • Esta opção está disponível apenas no plano Foto 200 
             </p>
           </CardContent>
         </Card>
