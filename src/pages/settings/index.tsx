@@ -9,8 +9,9 @@ import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { useApp } from '@/contexts/AppContext';
-import { useTranslation } from '@/lib/i18n/translations';
-import type { Language } from '@/lib/i18n/translations';
+import { useTranslation } from '@/lib/translations';
+import type { Language } from '@/lib/translations';
+import { se } from 'date-fns/locale';
 
 const Settings: React.FC = () => {
   const navigate = useNavigate();
@@ -89,7 +90,7 @@ const Settings: React.FC = () => {
                 {t.settings.profile}
               </CardTitle>
               <CardDescription>
-                Informações da sua conta
+                {t.settings.profileDescription}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -122,7 +123,7 @@ const Settings: React.FC = () => {
               {t.settings.appearance}
             </CardTitle>
             <CardDescription>
-              Personalize a aparência do aplicativo
+              {t.settings.appearanceDescription}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -130,7 +131,7 @@ const Settings: React.FC = () => {
               <div className="space-y-0.5">
                 <Label htmlFor="theme">{t.settings.theme}</Label>
                 <p className="text-sm text-muted-foreground">
-                  Escolha o tema de cores do aplicativo
+                 {t.settings.themeDescription}
                 </p>
               </div>
               <Select value={settings.theme} onValueChange={handleThemeChange}>
@@ -170,7 +171,7 @@ const Settings: React.FC = () => {
               {t.settings.language}
             </CardTitle>
             <CardDescription>
-              Configure o idioma do aplicativo
+              {t.settings.languageDescription}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -178,7 +179,7 @@ const Settings: React.FC = () => {
               <div className="space-y-0.5">
                 <Label htmlFor="language">{t.settings.language}</Label>
                 <p className="text-sm text-muted-foreground">
-                  Selecione o idioma de exibição
+                  {t.settings.languageInstruction}
                 </p>
               </div>
               <Select 
@@ -222,7 +223,7 @@ const Settings: React.FC = () => {
               {t.settings.notifications}
             </CardTitle>
             <CardDescription>
-              Configure as notificações do aplicativo
+              {t.settings.notificationDescription}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -230,7 +231,7 @@ const Settings: React.FC = () => {
               <div className="space-y-0.5">
                 <Label htmlFor="notifications">{t.settings.enableNotifications}</Label>
                 <p className="text-sm text-muted-foreground">
-                  Receba alertas sobre atualizações e novidades
+                  {t.settings.notificationAlert}
                 </p>
               </div>
               <Switch
@@ -246,7 +247,7 @@ const Settings: React.FC = () => {
               <div className="space-y-0.5">
                 <Label htmlFor="autoSave">{t.settings.autoSave}</Label>
                 <p className="text-sm text-muted-foreground">
-                  Salvar alterações automaticamente
+                  {t.settings.saveAlert}
                 </p>
               </div>
               <Switch

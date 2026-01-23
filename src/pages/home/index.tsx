@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus, Search, Table } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useTranslation } from '@/lib/i18n/translations';
+import { useTranslation } from '@/lib/translations';
 
 
 export default function Home() {

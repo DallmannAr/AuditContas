@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Check, Zap, Crown, TrendingUp } from 'lucide-react';
-import { useTranslation } from '@/lib/i18n/translations';
+import { useTranslation } from '@/lib/translations';
 import { PLANS, PLAN_ORDER, calculateUsageStats, OVERAGE_PHOTO_PRICE } from '@/types/subscription';
 import type { UserSubscription, SubscriptionPlan } from '@/types/subscription';
 import { subscriptionService } from '@/services/subscriptionService';

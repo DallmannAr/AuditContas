@@ -11,7 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { UserPlus, Mail, Lock, User, Phone, AlertCircle } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { useTranslation } from "@/lib/i18n/translations";
+import { useTranslation } from "@/lib/translations";
 export default function SignUp() {
   const { signUp, isLoading } = useAuth();
   const [name, setName] = useState("");

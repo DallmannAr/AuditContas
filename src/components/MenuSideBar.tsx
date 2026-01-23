@@ -20,7 +20,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
-import { useTranslation } from '@/lib/i18n/translations';
+import { useTranslation } from '@/lib/translations';
 
 export function MenuSidebar() {
 

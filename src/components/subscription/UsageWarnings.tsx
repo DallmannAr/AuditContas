@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { AlertTriangle, Ban, TrendingUp } from 'lucide-react';
 import { UsageStats } from '@/types/subscription';
-import { useTranslation } from '@/lib/i18n/translations';
+import { useTranslation } from '@/lib/translations';
 import { useNavigate } from 'react-router-dom';
 
 interface UsageWarning80Props {

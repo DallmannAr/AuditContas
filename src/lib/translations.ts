@@ -61,10 +61,18 @@ export interface Translations {
   settings: {
     title: string;
     profile: string;
+    profileDescription: string;
     appearance: string;
+    appearanceDescription: string;
     language: string;
+    languageDescription: string;
+    languageInstruction: string;
     notifications: string;
+    notificationDescription: string;
+    notificationAlert: string;
+    saveAlert: string;
     theme: string;
+    themeDescription: string;
     themeLight: string;
     themeDark: string;
     themeSystem: string;
@@ -177,10 +185,18 @@ export const translations: Record<Language, Translations> = {
     settings: {
       title: 'Configurações',
       profile: 'Perfil',
+      profileDescription: 'Informações da sua conta',
       appearance: 'Aparência',
+      appearanceDescription: 'Personalize a aparência do aplicativo',
       language: 'Idioma',
+      languageDescription: 'Configure o idioma do aplicativo',
+      languageInstruction: 'Selecione o idioma de exibição',
       notifications: 'Notificações',
+      notificationDescription: 'Configure as notificações do aplicativo',
+      notificationAlert: 'Receba alertas sobre atualizações e novidades',
+      saveAlert: 'Salvar alterações automaticamente',
       theme: 'Tema',
+      themeDescription: 'Escolha o tema de cores do aplicativo',
       themeLight: 'Claro',
       themeDark: 'Escuro',
       themeSystem: 'Sistema',
@@ -288,10 +304,18 @@ export const translations: Record<Language, Translations> = {
     settings: {
       title: 'Settings',
       profile: 'Profile',
+      profileDescription: 'Your account information',
       appearance: 'Appearance',
+      appearanceDescription: "Customize the app's appearance.",
       language: 'Language',
+      languageDescription: "Configure the app's language",
+      languageInstruction: 'Select the display language',
       notifications: 'Notifications',
+      notificationDescription: 'Change app notifications',
+      notificationAlert: 'Receive alerts about updates and news',
+      saveAlert: 'Save changes automatically',      
       theme: 'Theme',
+      themeDescription: "Choose the app's color theme",
       themeLight: 'Light',
       themeDark: 'Dark',
       themeSystem: 'System',
@@ -397,10 +421,18 @@ export const translations: Record<Language, Translations> = {
     settings: {
       title: 'Configuración',
       profile: 'Perfil',
+      profileDescription: 'La información de tu cuenta',
       appearance: 'Apariencia',
+      appearanceDescription: 'Personaliza la apariencia de la aplicación',
       language: 'Idioma',
+      languageDescription: 'Configurar el idioma de la aplicación',
+      languageInstruction:  'Seleccione el idioma de visualización',
       notifications: 'Notificaciones',
+      notificationDescription: 'Configurar notificaciones de la app',
+      notificationAlert: 'Recibir alertas sobre actualizaciones y noticias',
+      saveAlert: 'Guardar cambios automáticamente',            
       theme: 'Tema',
+      themeDescription: 'Elige el tema de color de la aplicación',
       themeLight: 'Claro',
       themeDark: 'Oscuro',
       themeSystem: 'Sistema',

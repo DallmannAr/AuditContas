@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { LogIn, Mail, Lock, AlertCircle } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { useTranslation } from '@/lib/i18n/translations';
+import { useTranslation } from '@/lib/translations';
 
 export default function Login() {
   const { login, isLoading } = useAuth();
