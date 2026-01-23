@@ -102,24 +102,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     }
   }, [isAuthenticated])
 
-  //Refresh status when subscription chage
-  useEffect(() => {
-    if(subscription) {
-      const stats = calculateUsageStats(subscription);
-      setUsageStats(stats);
 
-      //Save in local storage 
-      localStorage.setItem('userSubscription', JSON.stringify(subscription));
-
-      //Show warnings if need
-      if(showWarning && settings.notifications) {
-        showWarning(
-          'Atenção: Limite Próximo',
-          `Você usou ${stats.percentage.toFixed(0)}% do seu plano mensal` 
-        )
-      }
-    }
-  }, [subscription])
 
 
 
@@ -155,6 +138,26 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       variant: 'default',
     });
   }, [toast]);
+
+    //Refresh status when subscription chage
+  useEffect(() => {
+    if(subscription) {
+      const stats = calculateUsageStats(subscription);
+      setUsageStats(stats);
+
+      //Save in local storage 
+      localStorage.setItem('userSubscription', JSON.stringify(subscription));
+
+      //Show warnings if need
+      if(showWarning && settings.notifications) {
+        showWarning(
+          'Atenção: Limite Próximo',
+          `Você usou ${stats.percentage.toFixed(0)}% do seu plano mensal` 
+        )
+      }
+    }
+  }, [subscription, showWarning])
+
 
   //Load user's subscription
   const refreshSubscription = useCallback(async  () => {

@@ -20,6 +20,10 @@ export interface Translations {
     confirm: string;
     close: string;
     unavailable: string;
+    process: string;
+    file: string;
+    lines: string;
+    pending: string;
   };
   
   // Navigation
@@ -96,13 +100,22 @@ export interface Translations {
     overagePhotos: string;
     overagePhotoPrice: string;
     plansDescription: string;
+    availablePlans: string;
+    hibrid: string;
+    planExcessPhoto: string;
+    planExcessPhotoDetails: string;
+    excessPhotoDetails1: string;
+    excessPhotoDetails2: string;
+    excessPhotoDetails3: string;
   };
   
   // OCR
   ocr: {
     title: string;
     uploadImage: string;
+    emptyFiles: string;
     selectFiles: string;
+    selectFilesDescription: string;
     processing: string;
     extractedData: string;
     exportCSV: string;
@@ -113,7 +126,18 @@ export interface Translations {
     limitReached: string;
     upgradeRequired: string;
     warningLimit: string;
-    
+    headerDescription: string;
+    unavailableOCR: string;
+    basicPLanOCR: string;
+    methodOCR: string;
+    instructionsOCR: string;
+    totalFiles: string;
+    processedFiles: string;
+    errorFiles: string;
+    estimatedPrice: string;
+    azureDescription: string;
+    smartDescription: string;
+    claudeDescription: string;
   };
   
   // Usage warnings
@@ -129,6 +153,14 @@ export interface Translations {
     excessConfirmDescription: string;
     photos: string;
     coin: string;   
+  };
+
+  toast: {
+    downgradeToast: string;
+    samePlanToast: string;
+    signatureLoadErrorToast: string;
+    signatureRefreshSucessToast: string;
+    signatureRefreshErrorToast: string;
   };
 }
 
@@ -149,7 +181,11 @@ export const translations: Record<Language, Translations> = {
       previous: 'Anterior',
       confirm: 'Confirmar',
       close: 'Fechar',
-      unavailable: 'Indisponível'
+      unavailable: 'Indisponível',
+      process: 'Processar',
+      file: 'Arquivos',
+      pending: 'Pendente',
+      lines: 'Linhas'
     },
     nav: {
       home: 'Início',
@@ -218,12 +254,20 @@ export const translations: Record<Language, Translations> = {
       overagePhotos: 'Fotos Excedentes',
       overagePhotoPrice: 'R$ 1,50 por foto adicional',
       plansDescription: 'Escolha o plano ideal para suas necessidades',
-
+      availablePlans: 'Ver planos disponíveis',
+      hibrid: 'Hibrído',
+      planExcessPhoto: 'Plano Foto 200',
+      planExcessPhotoDetails: 'Após usar suas 200 fotos mensais, você pode continuar usando o OCR pagando',
+      excessPhotoDetails1: 'As fotos excedentes são cobradas à parte na sua fatura mensal',
+      excessPhotoDetails2: 'Você precisa aceitar explicitamente usar fotos excedentes',
+      excessPhotoDetails3: 'Esta opção está disponível apenas no plano Foto 200 ',
     },
     ocr: {
       title: 'Extração de Tabelas',
       uploadImage: 'Enviar Imagem',
+      emptyFiles: 'Nenhum arquivo adicionado',
       selectFiles: 'Selecionar Arquivos',
+      selectFilesDescription: 'Selecione arquivos para começar',
       processing: 'Processando',
       extractedData: 'Dados Extraídos',
       exportCSV: 'Exportar CSV',
@@ -234,6 +278,18 @@ export const translations: Record<Language, Translations> = {
       limitReached: 'Limite Atingido',
       upgradeRequired: 'Upgrade Necessário',
       warningLimit: 'Atenção: Limite Próximo',
+      headerDescription: 'Faça upload de imagens de tabelas para extrair dados automaticamente',
+      unavailableOCR: 'OCR de Fotos Não Disponível',
+      basicPLanOCR: 'Seu plano Básico não inclui OCR de fotos. Faça upgrade para desbloquear!',
+      methodOCR: 'Escolha o método de processamento das imagens',
+      instructionsOCR: 'Suporta JPG, PNG, PDF. Recomendado: imagens com boa iluminação',
+      totalFiles: 'Total de arquivos',
+      processedFiles: 'Processados',
+      errorFiles: 'Com erro',
+      estimatedPrice: 'Custo estimado',
+      azureDescription: 'Rápido e econômico',
+      smartDescription: 'Melhor custo-benefício',
+      claudeDescription: 'Máxima precisão',      
     },
     usage: {
       dueLimit: 'Valido até',
@@ -247,6 +303,14 @@ export const translations: Record<Language, Translations> = {
       excessConfirmDescription: 'Cada foto adicional custará R$ 1,50. Você aceita?',
       photos: 'Fotos',
       coin: 'R$',
+    },
+
+    toast: {
+      downgradeToast: 'Não é possível fazer downgrade. Entre em contato com o suporte.',
+      samePlanToast: 'Você já está nesse plano',
+      signatureLoadErrorToast: 'Erro ao carregar dados da assinatura',
+      signatureRefreshErrorToast: 'Erro ao atualizar plano',
+      signatureRefreshSucessToast: 'Plano atualizado com sucesso!'
     },
   },
   
@@ -266,7 +330,11 @@ export const translations: Record<Language, Translations> = {
       previous: 'Previous',
       confirm: 'Confirm',
       close: 'Close',
-      unavailable: 'Unavailable'
+      unavailable: 'Unavailable',
+      process: 'Load',
+      file: 'Files',
+      pending: 'Pending',
+      lines: 'Lines'
     },
     nav: {
       home: 'Home',
@@ -337,11 +405,20 @@ export const translations: Record<Language, Translations> = {
       overagePhotos: 'Excess Photos',
       overagePhotoPrice: '$0.30 per additional photo',
       plansDescription: 'Choose the ideal plan for your needs',
+      availablePlans: 'View available plans',
+      hibrid: 'Hybrid',
+      planExcessPhoto: 'Plan Foto 200',
+      planExcessPhotoDetails: 'After using your 200 monthly photos, you can continue using the OCR by paying',
+      excessPhotoDetails1: 'As fotos excedentes são cobradas à parte na sua fatura mensal',
+      excessPhotoDetails2: 'Additional photos will be charged separately on your monthly bill',
+      excessPhotoDetails3: 'This option is only available on the Foto 200 plan',
     },
     ocr: {
       title: 'Table Extraction',
       uploadImage: 'Upload Image',
+      emptyFiles: 'No files added',
       selectFiles: 'Select Files',
+      selectFilesDescription: 'Select files to get started',
       processing: 'Processing',
       extractedData: 'Extracted Data',
       exportCSV: 'Export CSV',
@@ -352,6 +429,18 @@ export const translations: Record<Language, Translations> = {
       limitReached: 'Limit Reached',
       upgradeRequired: 'Upgrade Required',
       warningLimit: 'Warning: Limit Near',
+      headerDescription: 'Upload table images to automatically extract data',
+      unavailableOCR: 'Photo OCR unavaiable',
+      basicPLanOCR: 'Your Basic plan does not include photo OCR. Upgrade to unlock it!',
+      methodOCR: 'Choose the image processing method',
+      instructionsOCR: 'Supports JPG, PNG, and PDF. Recommended: images with good lighting',
+      totalFiles: 'Total Files',
+      processedFiles: 'Processed',
+      errorFiles: 'Error',
+      estimatedPrice: 'Estimated cost',
+      azureDescription: 'Fast and economic',
+      smartDescription: 'Best value for money',
+      claudeDescription: 'Max Precision', 
     },
     usage: {
       dueLimit: 'Valid until',
@@ -366,6 +455,15 @@ export const translations: Record<Language, Translations> = {
       photos: 'Photos',
       coin: '$',
     },
+
+    toast: {
+      downgradeToast: 'Downgrading is not possible. Please contact support.',
+      samePlanToast: "You're already on that plan",
+      signatureLoadErrorToast: 'Error loading signature data',
+      signatureRefreshErrorToast:  'Error updating plan',
+      signatureRefreshSucessToast:  'Plan updated successfully!'
+    },
+
   },
   
   'es-ES': {
@@ -384,8 +482,11 @@ export const translations: Record<Language, Translations> = {
       previous: 'Anterior',
       confirm: 'Confirmar',
       close: 'Cerrar',
-      unavailable: 'Indisponible'
-
+      unavailable: 'Indisponible',
+      process: 'Processo',
+      file: 'Archivos',
+      pending: 'Pendiente',
+      lines: 'Pautas'
     },
     nav: {
       home: 'Inicio',
@@ -454,11 +555,20 @@ export const translations: Record<Language, Translations> = {
       overagePhotos: 'Fotos Excedentes',
       overagePhotoPrice: '$0,30 por foto adicional',
       plansDescription: 'Elige el plan ideal para tus necesidades',
+      availablePlans: 'Ver planes disponibles',
+      hibrid: 'Híbrido',
+      planExcessPhoto: 'Plano Foto 200',
+      planExcessPhotoDetails: 'Después de usar tus 200 fotos mensuales, puedes seguir usando el OCR pagando',
+      excessPhotoDetails1: 'Las fotos sobrantes se cobran aparte en tu factura mensual',
+      excessPhotoDetails2: 'Las fotos adicionales se cobrarán aparte en tu factura mensual',
+      excessPhotoDetails3: 'Esta opción solo está disponible en el plan Foto 200',
     },
     ocr: {
       title: 'Extracción de Tablas',
       uploadImage: 'Subir Imagen',
+      emptyFiles: 'No se agregaron archivos',
       selectFiles: 'Seleccionar Archivos',
+      selectFilesDescription: 'Seleccione archivos para comenzar',
       processing: 'Procesando',
       extractedData: 'Datos Extraídos',
       exportCSV: 'Exportar CSV',
@@ -469,6 +579,18 @@ export const translations: Record<Language, Translations> = {
       limitReached: 'Límite Alcanzado',
       upgradeRequired: 'Actualización Requerida',
       warningLimit: 'Atención: Límite Próximo',
+      headerDescription: 'Sube imágenes de tablas para extraer datos automáticamente',
+      unavailableOCR: 'OCR de fotos no disponible',
+      basicPLanOCR: 'Tu plan Básico no incluye OCR de fotos. ¡Mejora tu plan para desbloquearlo!',
+      methodOCR: 'Elija el método de procesamiento de imágenes',
+      instructionsOCR: 'Compatible con JPG, PNG y PDF. Recomendado: imágenes con buena iluminación',
+      totalFiles: 'Archivos Totales',
+      processedFiles: 'Procesado',
+      errorFiles: 'Con error', 
+      estimatedPrice: 'Costo estimado',
+      azureDescription: 'Rápido y económico',
+      smartDescription: 'La mejor relación calidad-precio',
+      claudeDescription: 'Máxima precisión',     
     },
     usage: {
       dueLimit: 'Válida hasta',
@@ -482,6 +604,14 @@ export const translations: Record<Language, Translations> = {
       excessConfirmDescription: 'Cada foto adicional costará $0,30. ¿Aceptas?',
       photos: 'Fotos', 
       coin: '$',
+    },
+
+    toast: {
+      downgradeToast: 'No es posible cambiar a una versión inferior. Contacta con el servicio de asistencia.',
+      samePlanToast: "Ya estás en ese plan",
+      signatureLoadErrorToast: 'Error al cargar los datos de la firma',
+      signatureRefreshErrorToast:  'Error al actualizar el plan',
+      signatureRefreshSucessToast:  'Plan actualizado correctamente!'
     },
   },
 };

@@ -27,8 +27,8 @@ export default function Plans() {
       const data = await subscriptionService.getCurrentSubscription();
       setSubscription(data);
     } catch (error) {
-      console.error('Erro ao carregar assinatura:', error);
-      toast.error('Erro ao carregar dados da assinatura');
+      console.error('Error when loading subscription', error);
+      toast.error((t.toast.signatureLoadErrorToast));
     } finally {
       setLoading(false);
     }
@@ -38,16 +38,16 @@ export default function Plans() {
     if (!subscription) return;
 
     if (subscription.plan === newPlan) {
-      toast.info('Você já está neste plano');
+      toast.info((t.toast.samePlanToast));
       return;
     }
 
-    // Verificar se é downgrade
+    // Verify if is a downgrade
     const currentIndex = PLAN_ORDER.indexOf(subscription.plan);
     const newIndex = PLAN_ORDER.indexOf(newPlan);
 
     if (newIndex < currentIndex) {
-      toast.error('Não é possível fazer downgrade. Entre em contato com o suporte.');
+      toast.error((t.toast.downgradeToast));
       return;
     }
 
@@ -56,10 +56,10 @@ export default function Plans() {
     try {
       const updated = await subscriptionService.upgradePlan(newPlan);
       setSubscription(updated);
-      toast.success('Plano atualizado com sucesso!');
+      toast.success((t.toast.signatureRefreshSucessToast));
     } catch (error: any) {
       console.error('Erro ao fazer upgrade:', error);
-      toast.error(error.response?.data?.message || 'Erro ao atualizar plano');
+      toast.error(error.response?.data?.message || (t.toast.signatureRefreshErrorToast));
     } finally {
       setUpgrading(false);
     }
@@ -185,7 +185,7 @@ export default function Plans() {
                   <CardDescription>
                     {plan.photoLimit === 0
                       ? (t.usage.limitReachedTitle)
-                      : `${plan.photoLimit}  ${t.plans.perMonth}`}
+                      : `${plan.photoLimit} ${t.usage.photos.toLowerCase()} ${t.plans.perMonth}`}
                   </CardDescription>
                 </CardHeader>
 
@@ -239,22 +239,22 @@ export default function Plans() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <TrendingUp className="w-5 h-5" />
-              Sobre Fotos Excedentes
+              {t.plans.overagePhotos}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3 text-sm">
             <p>
-              <strong>Plano Foto 200:</strong> Após usar suas 200 fotos mensais, 
-              você pode continuar usando o OCR pagando R$ {OVERAGE_PHOTO_PRICE.toFixed(2)} por foto adicional.
+              <strong>{t.plans.planExcessPhoto}:</strong> {
+              t.plans.planExcessPhotoDetails} {t.plans.overagePhotoPrice} 
             </p>
             <p className="text-muted-foreground">
-              • As fotos excedentes são cobradas à parte na sua fatura mensal
+              • {t.plans.excessPhotoDetails1}
             </p>
             <p className="text-muted-foreground">
-              • Você precisa aceitar explicitamente usar fotos excedentes
+              • {t.plans.excessPhotoDetails2}
             </p>
             <p className="text-muted-foreground">
-              • Esta opção está disponível apenas no plano Foto 200 
+              • {t.plans.excessPhotoDetails3}
             </p>
           </CardContent>
         </Card>
