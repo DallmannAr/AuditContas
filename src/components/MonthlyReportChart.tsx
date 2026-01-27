@@ -8,6 +8,8 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
+import { useTranslation } from "@/lib/translations";
+
 
 // Mocked data - monthly financial values in Reais
 const chartData = [
@@ -20,9 +22,11 @@ const chartData = [
 ];
 
 export function MonthlyReportChart() {
+const { t } = useTranslation()
+
   return (
     <div className="bg-card rounded-lg p-6 border border-border">
-      <h3 className="text-lg font-semibold mb-4">Gráfico Relatório Mensal</h3>
+      <h3 className="text-lg font-semibold mb-4">{t.common.monthChart}</h3>
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={chartData}>
           <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />

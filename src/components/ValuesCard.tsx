@@ -1,10 +1,14 @@
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { useTranslation } from "@/lib/translations";
 
 type Period = "Dia" | "Semana" | "Mês" | "Ano";
 
 export function ValuesCard() {
+
+  const { t } = useTranslation();
+
   const [selectedPeriod, setSelectedPeriod] = useState<Period>("Mês");
   
   // Mock data that changes based on period
@@ -23,7 +27,7 @@ export function ValuesCard() {
   return (
     <div className="bg-card rounded-lg p-6 border border-border">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-semibold">Valores</h2>
+        <h2 className="text-xl font-semibold">{t.common.value}</h2>
         <div className="flex gap-2">
           {periods.map((period) => (
             <Button
@@ -44,7 +48,7 @@ export function ValuesCard() {
           <p className="text-4xl font-bold">R${total.toLocaleString()}</p>
         </div>
         <div>
-          <p className="text-sm text-muted-foreground mb-2">Pendente</p>
+          <p className="text-sm text-muted-foreground mb-2">{t.common.pending}</p>
           <p className="text-4xl font-bold">R${pendente.toLocaleString()}</p>
         </div>
       </div>

@@ -20,7 +20,7 @@ export default function Home() {
       <div className="p-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold">Home</h1>
+          <h1 className="text-3xl font-bold">{t.nav.home}</h1>
           <div className="flex items-center gap-3">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />

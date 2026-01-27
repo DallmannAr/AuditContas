@@ -26,7 +26,7 @@ const Settings: React.FC = () => {
     updateSettings({ language });
     showSuccess(
       t.settings.savedSuccess,
-      `Idioma alterado para ${getLanguageName(language)}`
+      `${t.toast.languageSettingToast} ${getLanguageName(language)}`
     );
   };
 

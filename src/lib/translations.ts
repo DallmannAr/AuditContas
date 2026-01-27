@@ -24,7 +24,15 @@ export interface Translations {
     file: string;
     lines: string;
     pending: string;
-  };
+    value: string;
+    day: string;
+    week: string; 
+    month: string;
+    year: string;
+    monthChart: string;
+    income: string;
+    expense: string;
+   };
   
   // Navigation
   nav: {
@@ -161,6 +169,7 @@ export interface Translations {
     signatureLoadErrorToast: string;
     signatureRefreshSucessToast: string;
     signatureRefreshErrorToast: string;
+    languageSettingToast: string;
   };
 }
 
@@ -185,7 +194,15 @@ export const translations: Record<Language, Translations> = {
       process: 'Processar',
       file: 'Arquivos',
       pending: 'Pendente',
-      lines: 'Linhas'
+      lines: 'Linhas',
+      value: 'Valores',
+      day: 'Dia',
+      week: 'Semana', 
+      month: 'Mês',
+      year: 'Ano',
+      monthChart: 'Gráfico Relatório Mensal',
+      expense: 'Despesa',
+      income: 'Receita',
     },
     nav: {
       home: 'Início',
@@ -310,7 +327,8 @@ export const translations: Record<Language, Translations> = {
       samePlanToast: 'Você já está nesse plano',
       signatureLoadErrorToast: 'Erro ao carregar dados da assinatura',
       signatureRefreshErrorToast: 'Erro ao atualizar plano',
-      signatureRefreshSucessToast: 'Plano atualizado com sucesso!'
+      signatureRefreshSucessToast: 'Plano atualizado com sucesso!',
+      languageSettingToast: 'Idioma alterado para',
     },
   },
   
@@ -334,7 +352,15 @@ export const translations: Record<Language, Translations> = {
       process: 'Load',
       file: 'Files',
       pending: 'Pending',
-      lines: 'Lines'
+      lines: 'Lines',
+      value: 'Values',
+      day: 'Day',
+      week: 'Week', 
+      month: 'Month',
+      year: 'Year',      
+      monthChart: 'Monthly Report Chart',
+      expense: 'Expense',
+      income: 'Income'
     },
     nav: {
       home: 'Home',
@@ -461,7 +487,8 @@ export const translations: Record<Language, Translations> = {
       samePlanToast: "You're already on that plan",
       signatureLoadErrorToast: 'Error loading signature data',
       signatureRefreshErrorToast:  'Error updating plan',
-      signatureRefreshSucessToast:  'Plan updated successfully!'
+      signatureRefreshSucessToast:  'Plan updated successfully!',
+      languageSettingToast: 'Language changed to',
     },
 
   },
@@ -486,7 +513,15 @@ export const translations: Record<Language, Translations> = {
       process: 'Processo',
       file: 'Archivos',
       pending: 'Pendiente',
-      lines: 'Pautas'
+      lines: 'Pautas',
+      value: 'Valores',
+      day: 'Día',
+      week: 'Semana', 
+      month: 'Mês',
+      year: 'Año',
+      monthChart: 'Gráfico de informe mensual',
+      expense: 'Gastos',
+      income: 'Lucro',
     },
     nav: {
       home: 'Inicio',
@@ -611,7 +646,8 @@ export const translations: Record<Language, Translations> = {
       samePlanToast: "Ya estás en ese plan",
       signatureLoadErrorToast: 'Error al cargar los datos de la firma',
       signatureRefreshErrorToast:  'Error al actualizar el plan',
-      signatureRefreshSucessToast:  'Plan actualizado correctamente!'
+      signatureRefreshSucessToast:  'Plan actualizado correctamente!',
+      languageSettingToast: 'Idioma cambiado a',
     },
   },
 };
