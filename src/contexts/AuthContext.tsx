@@ -106,6 +106,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = () => {
     authService.logout();
     authService.clearUserData();
+    localStorage.removeItem('userSubscription');
     setUser(null);
     toast.info('Você foi desconectado');
     navigate('/login');

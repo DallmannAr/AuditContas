@@ -1,6 +1,11 @@
 // src/services/authService.ts
-import { apiService } from './apiService';
+import api from '@/lib/api';
 import { API_ENDPOINTS } from '@/config/api';
+import { 
+  AUTH_TOKEN_KEY, 
+  REFRESH_TOKEN_KEY, 
+  USER_DATA_KEY 
+} from '@/constants/auth';
 import { 
   LoginRequest, 
   LoginResponse, 
@@ -10,55 +15,65 @@ import {
 
 class AuthService {
   async login(credentials: LoginRequest): Promise<LoginResponse> {
-    const response = await apiService.post<LoginResponse>(
+    const response = await api.post<LoginResponse>(
       API_ENDPOINTS.auth.login,
-      credentials,
-      { requiresAuth: false }
+      credentials
     );
 
-    if (response.token) {
-      apiService.setAuthToken(response.token);
+    const data = response.data;
+
+    if (data.token) {
+      localStorage.setItem(AUTH_TOKEN_KEY, data.token);
     }
 
-    return response;
+    if (data.refreshToken) {
+      localStorage.setItem(REFRESH_TOKEN_KEY, data.refreshToken);
+    }
+
+    return data;
   }
 
   async signUp(data: CreateUserRequest): Promise<number> {
-    const response = await apiService.post<number>(
+    const response = await api.post<number>(
       API_ENDPOINTS.auth.register,
-      data,
-      { requiresAuth: false }
+      data
     );
 
-    return response;
+    return response.data;
   }
 
   logout(): void {
-    apiService.clearAuthToken();
+    localStorage.removeItem(AUTH_TOKEN_KEY);
+    this.clearUserData();
   }
 
   isAuthenticated(): boolean {
-    return apiService.isAuthenticated();
+    return !!this.getToken();
   }
 
   getToken(): string | null {
-    return localStorage.getItem('auth_token');
+    return localStorage.getItem(AUTH_TOKEN_KEY);
+  }
+
+  getRefreshToken(): string | null {
+    return localStorage.getItem(REFRESH_TOKEN_KEY);
   }
 
   // Salvar dados do usuário no localStorage
   saveUserData(user: User): void {
-    localStorage.setItem('user_data', JSON.stringify(user));
+    localStorage.setItem(USER_DATA_KEY, JSON.stringify(user));
   }
 
   // Obter dados do usuário do localStorage
   getUserData(): User | null {
-    const userData = localStorage.getItem('user_data');
+    const userData = localStorage.getItem(USER_DATA_KEY);
     return userData ? JSON.parse(userData) : null;
   }
 
   // Limpar dados do usuário
   clearUserData(): void {
-    localStorage.removeItem('user_data');
+    localStorage.removeItem(USER_DATA_KEY);
+    localStorage.removeItem(REFRESH_TOKEN_KEY);
   }
 }
 

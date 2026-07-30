@@ -35,24 +35,24 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-      <AppProvider >
         <AuthProvider>
-          <Routes>
-            {/* Rotas Públicas */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/" element={<SignUp />} />
+          <AppProvider>
+            <Routes>
+              {/* Rotas Públicas */}
+              <Route path="/login" element={<Login />} />
+              <Route path="/" element={<SignUp />} />
 
-            {/* Rotas Protegidas */}
-            <Route path="/search" element={<Search />} /> 
-            <Route path="/home" element={<Home />} />
-            <Route path="/table-upload" element={<TableUpload />} />
-            <Route path="/settings" element={<Settings/>} />
-            <Route path="/plans" element={<Plans />} />
-            {/* Rota 404 */}
-            <Route path="*" element={<NotFound />} /> 
-          </Routes>
+              {/* Rotas Protegidas */}
+              <Route path="/search" element={<Search />} /> 
+              <Route path="/home" element={<Home />} />
+              <Route path="/table-upload" element={<TableUpload />} />
+              <Route path="/settings" element={<Settings/>} />
+              <Route path="/plans" element={<Plans />} />
+              {/* Rota 404 */}
+              <Route path="*" element={<NotFound />} /> 
+            </Routes>
+          </AppProvider>
         </AuthProvider>
-      </AppProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

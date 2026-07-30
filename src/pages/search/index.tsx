@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -16,86 +16,83 @@ import {
   CardHeader, 
   CardTitle 
 } from "@/components/ui/card";
-import { Search as SearchIcon, Filter, X, Calendar } from "lucide-react";
+import { Search as SearchIcon, Filter, X, Calendar, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-
-// Mock data para resultados de pesquisa
-const mockResults = [
-  { 
-    id: 1, 
-    name: "Tabela_Procedimentos_Cardiologia", 
-    procedure: "Cardiologia", 
-    date: "15/10/25", 
-    size: "450KB",
-    status: "paid",
-    items: 24
-  },
-  { 
-    id: 2, 
-    name: "Tabela_Exames_Laboratoriais", 
-    procedure: "Laboratório", 
-    date: "14/10/25", 
-    size: "320KB",
-    status: "pending",
-    items: 18
-  },
-  { 
-    id: 3, 
-    name: "Tabela_Consultas_Ortopedia", 
-    procedure: "Ortopedia", 
-    date: "13/10/25", 
-    size: "280KB",
-    status: "recent",
-    items: 15
-  },
-  { 
-    id: 4, 
-    name: "Tabela_Procedimentos_Neurologia", 
-    procedure: "Neurologia", 
-    date: "12/10/25", 
-    size: "390KB",
-    status: "paid",
-    items: 21
-  },
-  { 
-    id: 5, 
-    name: "Tabela_Consultas_Pediatria", 
-    procedure: "Pediatria", 
-    date: "11/10/25", 
-    size: "310KB",
-    status: "recent",
-    items: 19
-  },
-];
+import { reportService } from "@/services/reportService";
+import type { Report } from "@/types/api";
+import { toast } from "sonner";
 
 const statusLabels = {
   paid: "Pago",
   pending: "Pendente",
-  recent: "Recente",
 };
 
 const statusColors = {
-  paid: "bg-popover text-chart-1",
-  pending: "bg-popover text-chart-3",
-  recent: "bg-popover text-chart-2",
+  paid: "bg-green-500 text-green-50",
+  pending: "bg-amber-500 text-amber-50",
 };
 
 export default function Search() {
+  const [reports, setReports] = useState<Report[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [procedureFilter, setProcedureFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
   const [dateFilter, setDateFilter] = useState("all");
   const [showFilters, setShowFilters] = useState(false);
 
+  useEffect(() => {
+    const fetchReports = async () => {
+      try {
+        setLoading(true);
+        const data = await reportService.getAllReports();
+        setReports(data);
+      } catch (err: any) {
+        toast.error(err.message || 'Erro ao carregar relatórios para pesquisa');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchReports();
+  }, []);
+
+  // Extrair convênios únicos das faturas reais do banco
+  const uniqueCovenants = Array.from(
+    new Set(reports.map((r) => r.covenant).filter(Boolean))
+  );
+
   // Filtrar resultados
-  const filteredResults = mockResults.filter((result) => {
-    const matchesSearch = result.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         result.procedure.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesProcedure = procedureFilter === "all" || result.procedure === procedureFilter;
-    const matchesStatus = statusFilter === "all" || result.status === statusFilter;
+  const filteredResults = reports.filter((result) => {
+    const matchesSearch = 
+      result.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      result.patient.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      result.covenant.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      result.item.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesProcedure = procedureFilter === "all" || result.covenant === procedureFilter;
     
-    return matchesSearch && matchesProcedure && matchesStatus;
+    // Status
+    const status = (result.pendingValue || 0) === 0 ? "paid" : "pending";
+    const matchesStatus = statusFilter === "all" || status === statusFilter;
+    
+    // Filtro de Data
+    let matchesDate = true;
+    if (dateFilter !== "all") {
+      const date = new Date(result.processedAt || result.createdAt);
+      const diffTime = Math.abs(new Date().getTime() - date.getTime());
+      const diffDays = diffTime / (1000 * 60 * 60 * 24);
+      
+      if (dateFilter === "today") {
+        matchesDate = date.toDateString() === new Date().toDateString();
+      } else if (dateFilter === "week") {
+        matchesDate = diffDays <= 7;
+      } else if (dateFilter === "month") {
+        matchesDate = diffDays <= 30;
+      }
+    }
+    
+    return matchesSearch && matchesProcedure && matchesStatus && matchesDate;
   });
 
   const clearFilters = () => {
@@ -106,6 +103,13 @@ export default function Search() {
 
   const activeFiltersCount = [procedureFilter, statusFilter, dateFilter].filter(f => f !== "all").length;
 
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    }).format(value);
+  };
+
   return (
     <DashboardLayout>
       <div className="p-8">
@@ -113,7 +117,7 @@ export default function Search() {
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">Pesquisa</h1>
           <p className="text-muted-foreground">
-            Busque e filtre suas tabelas por procedimento, status e data
+            Busque e filtre suas tabelas por convênio, status e data
           </p>
         </div>
 
@@ -127,7 +131,7 @@ export default function Search() {
                   <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input
                     type="search"
-                    placeholder="Buscar por nome da tabela ou procedimento..."
+                    placeholder="Buscar por convênio, paciente, título ou procedimento..."
                     className="pl-10"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
@@ -154,18 +158,18 @@ export default function Search() {
                   <Separator />
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="space-y-2">
-                      <label className="text-sm font-medium">Procedimento</label>
+                      <label className="text-sm font-medium">Convênio</label>
                       <Select value={procedureFilter} onValueChange={setProcedureFilter}>
                         <SelectTrigger>
                           <SelectValue placeholder="Todos" />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="all">Todos</SelectItem>
-                          <SelectItem value="Cardiologia">Cardiologia</SelectItem>
-                          <SelectItem value="Laboratório">Laboratório</SelectItem>
-                          <SelectItem value="Ortopedia">Ortopedia</SelectItem>
-                          <SelectItem value="Neurologia">Neurologia</SelectItem>
-                          <SelectItem value="Pediatria">Pediatria</SelectItem>
+                          {uniqueCovenants.map((cov) => (
+                            <SelectItem key={cov} value={cov}>
+                              {cov}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     </div>
@@ -180,13 +184,12 @@ export default function Search() {
                           <SelectItem value="all">Todos</SelectItem>
                           <SelectItem value="paid">Pago</SelectItem>
                           <SelectItem value="pending">Pendente</SelectItem>
-                          <SelectItem value="recent">Recente</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-sm font-medium">Data</label>
+                      <label className="text-sm font-medium">Data de Processamento</label>
                       <Select value={dateFilter} onValueChange={setDateFilter}>
                         <SelectTrigger>
                           <SelectValue placeholder="Todas" />
@@ -219,57 +222,73 @@ export default function Search() {
         </Card>
 
         {/* Results */}
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold">
-              {filteredResults.length} {filteredResults.length === 1 ? 'resultado encontrado' : 'resultados encontrados'}
-            </h2>
+        {loading ? (
+          <div className="flex flex-col items-center justify-center h-64">
+            <Loader2 className="w-8 h-8 animate-spin text-primary mb-2" />
+            <p className="text-sm text-muted-foreground">Carregando relatórios...</p>
           </div>
-
-          {filteredResults.length === 0 ? (
-            <Card>
-              <CardContent className="flex flex-col items-center justify-center py-12">
-                <SearchIcon className="w-12 h-12 text-muted-foreground mb-4" />
-                <p className="text-lg font-medium mb-2">Nenhum resultado encontrado</p>
-                <p className="text-sm text-muted-foreground">
-                  Tente ajustar seus filtros ou termo de busca
-                </p>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="grid gap-4">
-              {filteredResults.map((result) => (
-                <Card key={result.id} className="hover:shadow-md transition-shadow cursor-pointer">
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <CardTitle className="text-lg mb-2">{result.name}</CardTitle>
-                        <CardDescription className="flex flex-wrap gap-3">
-                          <span className="flex items-center gap-1">
-                            <Calendar className="w-3 h-3" />
-                            {result.date}
-                          </span>
-                          <span>•</span>
-                          <span>{result.size}</span>
-                          <span>•</span>
-                          <span>{result.items} itens</span>
-                        </CardDescription>
-                      </div>
-                      <div className="flex gap-2">
-                        <Badge variant="outline">{result.procedure}</Badge>
-                        <Badge 
-                          className={`${statusColors[result.status as keyof typeof statusColors]} bg-opacity-10`}
-                        >
-                          {statusLabels[result.status as keyof typeof statusLabels]}
-                        </Badge>
-                      </div>
-                    </div>
-                  </CardHeader>
-                </Card>
-              ))}
+        ) : (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold">
+                {filteredResults.length} {filteredResults.length === 1 ? 'resultado encontrado' : 'resultados encontrados'}
+              </h2>
             </div>
-          )}
-        </div>
+
+            {filteredResults.length === 0 ? (
+              <Card>
+                <CardContent className="flex flex-col items-center justify-center py-12">
+                  <SearchIcon className="w-12 h-12 text-muted-foreground mb-4" />
+                  <p className="text-lg font-medium mb-2">Nenhum resultado encontrado</p>
+                  <p className="text-sm text-muted-foreground">
+                    Tente ajustar seus filtros ou termo de busca
+                  </p>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="grid gap-4">
+                {filteredResults.map((result) => {
+                  const status = (result.pendingValue || 0) === 0 ? "paid" : "pending";
+                  return (
+                    <Card key={result.id} className="hover:shadow-md transition-shadow">
+                      <CardHeader>
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <CardTitle className="text-lg mb-2">{result.title}</CardTitle>
+                            <CardDescription className="flex flex-wrap gap-3">
+                              <span className="flex items-center gap-1">
+                                <Calendar className="w-3 h-3" />
+                                {new Date(result.processedAt || result.createdAt).toLocaleDateString('pt-BR')}
+                              </span>
+                              <span>•</span>
+                              <span>Paciente: {result.patient}</span>
+                              <span>•</span>
+                              <span>Total: {formatCurrency(result.totalValue)}</span>
+                              {(result.pendingValue || 0) > 0 && (
+                                <>
+                                  <span>•</span>
+                                  <span className="text-destructive font-medium">
+                                    Pendente: {formatCurrency(result.pendingValue)}
+                                  </span>
+                                </>
+                              )}
+                            </CardDescription>
+                          </div>
+                          <div className="flex flex-col items-end gap-2">
+                            <Badge variant="outline">{result.covenant}</Badge>
+                            <Badge className={`${statusColors[status]}`}>
+                              {statusLabels[status]}
+                            </Badge>
+                          </div>
+                        </div>
+                      </CardHeader>
+                    </Card>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </DashboardLayout>
   );

@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { MenuSidebar } from "@/components/MenuSidebar";
+import { MenuSidebar } from "@/components/MenuSideBar";
 import { ThemeChanger } from "@/lib/ThemeChanger";
 import { ThemeProvider } from "next-themes";
 

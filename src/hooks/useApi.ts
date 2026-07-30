@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { apiService } from '@/services/apiService';
+import api from '@/lib/api';
 import { toast } from 'sonner';
 
 interface UseApiOptions {
@@ -76,12 +76,15 @@ export function useApi<T = any>(options: UseApiOptions = {}) {
   };
 }
 
-// Hook específico para chamadas GET com cache
+// Hook específico para chamadas GET com cache/fetch
 export function useApiGet<T = any>(endpoint: string, options: UseApiOptions = {}) {
   const { execute, ...rest } = useApi<T>(options);
 
   const fetch = useCallback(() => {
-    return execute(() => apiService.get<T>(endpoint));
+    return execute(async () => {
+      const response = await api.get<T>(endpoint);
+      return response.data;
+    });
   }, [endpoint, execute]);
 
   return {

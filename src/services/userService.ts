@@ -1,23 +1,27 @@
 // src/services/userService.ts
-import { apiService } from './apiService';
+import api from '@/lib/api';
 import { API_ENDPOINTS } from '@/config/api';
 import { User, UpdateUserRequest } from '@/types/api';
 
 class UserService {
   async getAll(): Promise<User[]> {
-    return apiService.get<User[]>(API_ENDPOINTS.users.list);
+    const response = await api.get<User[]>(API_ENDPOINTS.users.list);
+    return response.data;
   }
 
   async getById(id: number): Promise<User> {
-    return apiService.get<User>(API_ENDPOINTS.users.getById(id));
+    const response = await api.get<User>(API_ENDPOINTS.users.getById(id));
+    return response.data;
   }
 
   async update(id: number, data: UpdateUserRequest): Promise<void> {
-    return apiService.put<void>(API_ENDPOINTS.users.update(id), data);
+    const response = await api.put<void>(API_ENDPOINTS.users.update(id), data);
+    return response.data;
   }
 
   async delete(id: number): Promise<void> {
-    return apiService.delete<void>(API_ENDPOINTS.users.delete(id));
+    const response = await api.delete<void>(API_ENDPOINTS.users.delete(id));
+    return response.data;
   }
 }
 

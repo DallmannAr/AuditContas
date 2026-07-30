@@ -1,4 +1,3 @@
-// src/types/subscription.ts
 
 export type SubscriptionPlan = 'basic' | 'photo_60' | 'photo_100' | 'photo_150' | 'photo_200';
 

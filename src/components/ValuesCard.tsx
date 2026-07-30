@@ -1,28 +1,59 @@
+import { useState } from "react";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
 import { useTranslation } from "@/lib/translations";
+import type { Report } from "@/types/api";
 
 type Period = "Dia" | "Semana" | "Mês" | "Ano";
 
-export function ValuesCard() {
+interface ValuesCardProps {
+  reports: Report[];
+}
 
+export function ValuesCard({ reports = [] }: ValuesCardProps) {
   const { t } = useTranslation();
-
   const [selectedPeriod, setSelectedPeriod] = useState<Period>("Mês");
-  
-  // Mock data that changes based on period
-  const data = {
-    Dia: { total: 350, pendente: 80 },
-    Semana: { total: 2100, pendente: 450 },
-    Mês: { total: 5000, pendente: 1000 },
-    Ano: { total: 60000, pendente: 12000 },
+  const periods: Period[] = ["Dia", "Semana", "Mês", "Ano"];
+
+  const calculateValues = (period: Period) => {
+    const now = new Date();
+    let totalValue = 0;
+    let pendingValue = 0;
+
+    reports.forEach((report) => {
+      const date = new Date(report.processedAt || report.createdAt);
+      let matches = false;
+
+      if (period === "Dia") {
+        matches = date.toDateString() === now.toDateString();
+      } else if (period === "Semana") {
+        const diffTime = Math.abs(now.getTime() - date.getTime());
+        const diffDays = diffTime / (1000 * 60 * 60 * 24);
+        matches = diffDays <= 7;
+      } else if (period === "Mês") {
+        matches = date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
+      } else if (period === "Ano") {
+        matches = date.getFullYear() === now.getFullYear();
+      }
+
+      if (matches) {
+        totalValue += report.totalValue || 0;
+        pendingValue += report.pendingValue || 0;
+      }
+    });
+
+    return { total: totalValue, pendente: pendingValue };
   };
 
-  const { total, pendente } = data[selectedPeriod];
-  const percentage = ((total - pendente) / total) * 100;
+  const { total, pendente } = calculateValues(selectedPeriod);
+  const percentage = total > 0 ? ((total - pendente) / total) * 100 : 0;
 
-  const periods: Period[] = ["Dia", "Semana", "Mês", "Ano"];
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    }).format(value);
+  };
 
   return (
     <div className="bg-card rounded-lg p-6 border border-border">
@@ -45,11 +76,11 @@ export function ValuesCard() {
       <div className="grid grid-cols-2 gap-8 mb-6">
         <div>
           <p className="text-sm text-muted-foreground mb-2">Total</p>
-          <p className="text-4xl font-bold">R${total.toLocaleString()}</p>
+          <p className="text-4xl font-bold">{formatCurrency(total)}</p>
         </div>
         <div>
           <p className="text-sm text-muted-foreground mb-2">{t.common.pending}</p>
-          <p className="text-4xl font-bold">R${pendente.toLocaleString()}</p>
+          <p className="text-4xl font-bold">{formatCurrency(pendente)}</p>
         </div>
       </div>
       <div className="space-y-2">

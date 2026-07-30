@@ -1,15 +1,9 @@
-import React, { createContext, useContext, useState, useCallback, ReactNode, useEffect } from 'react';
+import React, { createContext, useContext, useState, useCallback, ReactNode, useEffect, useRef } from 'react';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
 import { subscriptionService } from '@/services/subscriptionService';
 import type { UserSubscription, UsageStats, SubscriptionPlan } from '@/types/subscription';
 import { calculateUsageStats } from '@/types/subscription';
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  phone?: string;
-}
 
 interface AppSettings {
   theme: 'light' | 'dark' | 'system';
@@ -19,17 +13,11 @@ interface AppSettings {
 }
 
 interface AppContextType {
-  // User state
-  user: User | null;
-  setUser: (user: User | null) => void;
-  isAuthenticated: boolean;
-  
   //Subscription State
   subscription: UserSubscription | null;
   usageStats: UsageStats | null;
   loadingSubscription: boolean;
   refreshSubscription: () => Promise<void>;
-
 
   //Subscription Helpers
   canUseOCR: () => Promise<boolean>;
@@ -49,10 +37,6 @@ interface AppContextType {
   showError: (title: string, description?: string) => void;
   showWarning: (title: string, description?: string) => void;
   showInfo: (title: string, description?: string) => void;
-
-  // Auth helpers
-  login: (user: User, token: string) => void;
-  logout: () => void;
 }
 
 const defaultSettings: AppSettings = {
@@ -70,17 +54,12 @@ interface AppProviderProps {
 
 export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const { toast } = useToast();
-  
-  //User State
-  const [user, setUser] = useState<User | null>(() => {
-    const savedUser = localStorage.getItem('user');
-    return savedUser ? JSON.parse(savedUser) : null;
-  });
+  const { isAuthenticated } = useAuth();
   
   //Subscription State
   const [subscription, setSubscription] = useState<UserSubscription | null>(null);
-  const [usageStats, setUsageStats] = useState<UsageStats | null>(null)
-  const [loadingSubscription, setLoadingSubscription] = useState(false)
+  const [usageStats, setUsageStats] = useState<UsageStats | null>(null);
+  const [loadingSubscription, setLoadingSubscription] = useState(false);
 
   //Setting State
   const [settings, setSettings] = useState<AppSettings>(() => {
@@ -89,22 +68,18 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   });
   
   const [isLoading, setIsLoading] = useState(false);
-
-  const isAuthenticated = !!user;
+  const hasShownNearLimitToast = useRef(false);
 
   //Subscription load when logging
   useEffect(() => {
-    if(isAuthenticated) {
+    if (isAuthenticated) {
       refreshSubscription();
     } else {
       setSubscription(null);
       setUsageStats(null);
+      hasShownNearLimitToast.current = false;
     }
-  }, [isAuthenticated])
-
-
-
-
+  }, [isAuthenticated]);
 
   // Toast helpers
   const showSuccess = useCallback((title: string, description?: string) => {
@@ -139,9 +114,9 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     });
   }, [toast]);
 
-    //Refresh status when subscription chage
+  //Refresh status when subscription chage
   useEffect(() => {
-    if(subscription) {
+    if (subscription) {
       const stats = calculateUsageStats(subscription);
       setUsageStats(stats);
 
@@ -149,25 +124,25 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       localStorage.setItem('userSubscription', JSON.stringify(subscription));
 
       //Show warnings if need
-      if(showWarning && settings.notifications) {
+      if (stats.isNearLimit && !hasShownNearLimitToast.current && showWarning && settings.notifications) {
         showWarning(
           'Atenção: Limite Próximo',
           `Você usou ${stats.percentage.toFixed(0)}% do seu plano mensal` 
-        )
+        );
+        hasShownNearLimitToast.current = true;
       }
     }
-  }, [subscription, showWarning])
-
+  }, [subscription, showWarning, settings.notifications]);
 
   //Load user's subscription
-  const refreshSubscription = useCallback(async  () => {
-    if(!isAuthenticated) return;
+  const refreshSubscription = useCallback(async () => {
+    if (!isAuthenticated) return;
 
     setLoadingSubscription(true);
 
-    try{
-        const data = await subscriptionService.getCurrentSubscription();
-        setSubscription(data);
+    try {
+      const data = await subscriptionService.getCurrentSubscription();
+      setSubscription(data);
     } catch (error) {
       console.error('Error when loading subscription', error);
 
@@ -179,12 +154,12 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     } finally {
       setLoadingSubscription(false);
     }
-  }, [isAuthenticated])
+  }, [isAuthenticated]);
 
-  //Veryfy if the user can use OCR
-  const canUseOCR= useCallback(async (): Promise<boolean> => {
+  //Verify if the user can use OCR
+  const canUseOCR = useCallback(async (): Promise<boolean> => {
     if (!subscription) {
-      showError('Error', 'Subscription not found');
+      showError('Erro', 'Assinatura não encontrada');
       return false;
     }
 
@@ -198,21 +173,19 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
 
     if (!usageStats) return false;
 
-    //Limit alreeady capped
+    //Limit already capped
     if (usageStats.needsUpgrade) return false;
 
     //Can use OCR
     if (usageStats.canUseOCR) return true;
   
-
-    
-  try {
-    const result = await subscriptionService.canUseOCR();
-    return result.canUse;
-  } catch (error) {
-    console.error('Erro ao verificar uso', error);
-    return false;
-  }
+    try {
+      const result = await subscriptionService.canUseOCR();
+      return result.canUse;
+    } catch (error) {
+      console.error('Erro ao verificar uso', error);
+      return false;
+    }
   }, [subscription, usageStats, showError]);
 
   //Register photo usage
@@ -222,7 +195,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
 
       //Refresh subscription to refresh the counters
       await refreshSubscription();  
-    } catch (error:any) {
+    } catch (error: any) {
       console.error('Error when register use:', error);
       showError('Erro', error.message || 'Não foi possível registrar o uso');
       throw error;
@@ -244,15 +217,14 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       showError('Erro', error.message || 'Não foi possível atualizar o plano');
       throw error;
     }
-  }, [showSuccess, showError])
-
+  }, [showSuccess, showError]);
 
   const updateSettings = useCallback((newSettings: Partial<AppSettings>) => {
     setSettings(prev => {
       const updated = { ...prev, ...newSettings };
       localStorage.setItem('appSettings', JSON.stringify(updated));
 
-      if(newSettings.theme){
+      if (newSettings.theme) {
         applyTheme(newSettings.theme);
       }
 
@@ -261,7 +233,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   }, []);
 
   const applyTheme = (theme: AppSettings['theme']) => {
-     if (theme === 'dark') {
+    if (theme === 'dark') {
       document.documentElement.classList.add('dark');
     } else if (theme === 'light') {
       document.documentElement.classList.remove('dark');
@@ -275,39 +247,11 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     }
   };
 
-   useEffect(() => {
+  useEffect(() => {
     applyTheme(settings.theme);
   }, []);
 
-  // Auth helpers
-  const login = useCallback((userData: User, token: string) => {
-    setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));
-    localStorage.setItem('authToken', token);
-
-    showSuccess('Login realizado', 'Bem-vindo de volta!');
-
-    refreshSubscription();
-  }, [showSuccess, refreshSubscription]);
-
-  const logout = useCallback(() => {
-    setUser(null);
-    setSubscription(null);
-    setUsageStats(null);
-
-
-    localStorage.removeItem('user');
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('userSubscription');
-    showInfo('Logout realizado', 'Até logo!');
-  }, [showInfo]);
-
   const value: AppContextType = {
-    //User
-    user,
-    setUser,
-    isAuthenticated,
-
     //Subscription
     subscription,
     usageStats,
@@ -330,10 +274,6 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     showError,
     showWarning,
     showInfo,
-
-    //Auth 
-    login,
-    logout,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

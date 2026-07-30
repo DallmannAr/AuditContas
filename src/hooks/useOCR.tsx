@@ -1,10 +1,10 @@
 // src/hooks/useOCR.ts
 import { useState, useCallback } from 'react';
-import { ocrService, OCRResult, OCRTableData, BatchOCRResult } from '@/services/ocrService';
+import { ocrService, OCRResult, OCRTableData, OcrProcessingMode } from '@/services/ocrService';
 import { toast } from 'sonner';
 
 interface UseOCROptions {
-  method?: 'azure' | 'claude' | 'smart'; // smart = híbrido
+  mode?: OcrProcessingMode;
   onSuccess?: (data: OCRTableData) => void;
   onError?: (error: Error) => void;
   showToast?: boolean;
@@ -17,7 +17,7 @@ export function useOCR(options: UseOCROptions = {}) {
   const [result, setResult] = useState<OCRResult | null>(null);
 
   const {
-    method = 'smart', // Padrão: híbrido
+    mode = 'ClaudeOnly',
     onSuccess,
     onError,
     showToast = true,
@@ -32,32 +32,16 @@ export function useOCR(options: UseOCROptions = {}) {
       setError(null);
       
       try {
-        let ocrResult: OCRResult;
-
-        // Escolhe o método de processamento
-        switch (method) {
-          case 'azure':
-            ocrResult = await ocrService.extractWithAzure(file);
-            break;
-          case 'claude':
-            ocrResult = await ocrService.extractWithClaude(file);
-            break;
-          case 'smart':
-          default:
-            ocrResult = await ocrService.extractSmart(file);
-            break;
-        }
+        const ocrResult = await ocrService.processImage(file, mode);
 
         if (ocrResult.success && ocrResult.data) {
           setData(ocrResult.data);
           setResult(ocrResult);
 
           if (showToast) {
+            const confidence = ocrResult.confidence ?? ocrResult.averageConfidence ?? 0;
             toast.success(
-              `Tabela extraída com sucesso! (${(ocrResult.averageConfidence || 0) * 100}% confiança)`,
-              {
-                description: `Método: ${ocrResult.method?.toUpperCase()}`,
-              }
+              `Tabela extraída com sucesso! (${(confidence * 100).toFixed(1)}% confiança)`
             );
           }
 
@@ -67,7 +51,7 @@ export function useOCR(options: UseOCROptions = {}) {
 
           return ocrResult;
         } else {
-          throw new Error(ocrResult.message || 'Erro ao processar imagem');
+          throw new Error(ocrResult.errorMessage || ocrResult.message || 'Erro ao processar imagem');
         }
       } catch (err) {
         const error = err instanceof Error ? err : new Error('Erro desconhecido');
@@ -88,7 +72,7 @@ export function useOCR(options: UseOCROptions = {}) {
         setLoading(false);
       }
     },
-    [method, onSuccess, onError, showToast]
+    [mode, onSuccess, onError, showToast]
   );
 
   /**
@@ -100,15 +84,13 @@ export function useOCR(options: UseOCROptions = {}) {
       setError(null);
 
       try {
-        const batchResult = await ocrService.extractBatch(files);
+        const results = await ocrService.processBatch(files, mode);
 
         if (showToast) {
-          toast.success(`${batchResult.totalImages} imagens processadas!`, {
-            description: `Confiança média: ${(batchResult.averageConfidence * 100).toFixed(1)}%`,
-          });
+          toast.success(`${results.length} imagens processadas!`);
         }
 
-        return batchResult;
+        return results;
       } catch (err) {
         const error = err instanceof Error ? err : new Error('Erro desconhecido');
         setError(error);
@@ -124,7 +106,7 @@ export function useOCR(options: UseOCROptions = {}) {
         setLoading(false);
       }
     },
-    [showToast]
+    [mode, showToast]
   );
 
   /**

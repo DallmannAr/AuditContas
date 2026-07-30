@@ -31,6 +31,7 @@
 
     export interface LoginResponse {
     token: string;
+    refreshToken?: string;
     }
 
     // ========== USUÁRIOS ==========
@@ -65,18 +66,20 @@
     id: number;
     covenant: string;
     title: string;
-    patient: string;
-    procedureName: string;
-    date: string;
-    dueDate: string;
-    emissionDate: string;
+    emission: string;
+    due: string;
+    period: string;
     register: string;
+    patient: string;
     item: string;
     amount: number;
     totalValue: number;
     paidValue: number;
-    pedingValue: number;
+    pendingValue: number;
     cardTribute: number;
-    repasse: number;
-    status: 'pending' | 'paid';
+    createdAt: string;
+    updatedAt: string;
+    processedBy: string;
+    confidence: number;
+    processedAt: string;
     }

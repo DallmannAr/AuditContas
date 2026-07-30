@@ -9,20 +9,55 @@ import {
   Legend,
 } from "recharts";
 import { useTranslation } from "@/lib/translations";
+import type { Report } from "@/types/api";
 
+interface MonthlyReportChartProps {
+  reports: Report[];
+}
 
-// Mocked data - monthly financial values in Reais
-const chartData = [
-  { month: "Jan", receita: 3200, despesa: 1800 },
-  { month: "Fev", receita: 4100, despesa: 2200 },
-  { month: "Mar", receita: 3800, despesa: 2000 },
-  { month: "Abr", receita: 5200, despesa: 2800 },
-  { month: "Mai", receita: 4700, despesa: 2500 },
-  { month: "Jun", receita: 5000, despesa: 2600 },
-];
+export function MonthlyReportChart({ reports = [] }: MonthlyReportChartProps) {
+  const { t } = useTranslation();
 
-export function MonthlyReportChart() {
-const { t } = useTranslation()
+  const getChartData = () => {
+    const months = [];
+    const now = new Date();
+    
+    // Gerar os últimos 6 meses dinamicamente
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const label = d.toLocaleDateString('pt-BR', { month: 'short' });
+      months.push({
+        month: label.charAt(0).toUpperCase() + label.slice(1, 3), // Capitalizar (ex: Jan, Fev)
+        year: d.getFullYear(),
+        monthNum: d.getMonth(),
+        receita: 0, // Mapeado para valor Pago
+        despesa: 0  // Mapeado para valor Pendente
+      });
+    }
+
+    // Acumular valores reais do banco de dados
+    reports.forEach((report) => {
+      const date = new Date(report.processedAt || report.createdAt);
+      const match = months.find(m => m.monthNum === date.getMonth() && m.year === date.getFullYear());
+      if (match) {
+        match.receita += Number(report.paidValue || 0);
+        match.despesa += Number(report.pendingValue || 0);
+      }
+    });
+
+    return months;
+  };
+
+  const chartData = getChartData();
+
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(value);
+  };
 
   return (
     <div className="bg-card rounded-lg p-6 border border-border">
@@ -38,7 +73,7 @@ const { t } = useTranslation()
           <YAxis 
             stroke="hsl(var(--muted-foreground))"
             tick={{ fill: "hsl(var(--foreground))" }}
-            tickFormatter={(value) => `R$${value}`}
+            tickFormatter={(value) => `R$${value.toLocaleString()}`}
           />
           <Tooltip
             contentStyle={{
@@ -47,13 +82,13 @@ const { t } = useTranslation()
               borderRadius: "6px",
             }}
             labelStyle={{ color: "hsl(var(--foreground))" }}
-            formatter={(value: number) => `R$${value}`}
+            formatter={(value: number) => [formatCurrency(value), '']}
           />
           <Legend 
             wrapperStyle={{ color: "hsl(var(--foreground))" }}
           />
-          <Bar dataKey="receita" fill="hsl(var(--primary))" radius={[8, 8, 0, 0]} />
-          <Bar dataKey="despesa" fill="hsl(var(--chart-3))" radius={[8, 8, 0, 0]} />
+          <Bar dataKey="receita" name="Recebido (R$)" fill="hsl(var(--primary))" radius={[8, 8, 0, 0]} />
+          <Bar dataKey="despesa" name="Pendente (R$)" fill="hsl(var(--chart-3))" radius={[8, 8, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>

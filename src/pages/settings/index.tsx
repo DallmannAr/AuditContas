@@ -9,13 +9,15 @@ import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { useApp } from '@/contexts/AppContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from '@/lib/translations';
 import type { Language } from '@/lib/translations';
 import { se } from 'date-fns/locale';
 
 const Settings: React.FC = () => {
   const navigate = useNavigate();
-  const { settings, updateSettings, user, logout, showSuccess } = useApp();
+  const { settings, updateSettings, showSuccess } = useApp();
+  const { user, logout } = useAuth();
   const { t } = useTranslation();
 
   const handleThemeChange = (theme: 'light' | 'dark' | 'system') => {

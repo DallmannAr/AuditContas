@@ -3,7 +3,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Badge } from '@/components/ui/badge';
 import { Check, Camera, Zap } from 'lucide-react';
 import { Plan } from '@/types/subscription';
-import { cn } from '@/lib/cssMerge';
+import { cn } from '@/lib/cssMerge.ts';
+
 
 interface PlanCardProps {
   plan: Plan;

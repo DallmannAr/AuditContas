@@ -55,7 +55,7 @@ export default function TableUpload() {
   const [excessAccepted, setExcessAccepted] = useState(false);
   
   const { processImage } = useOCR({
-    method: selectedMethod,
+    mode: selectedMethod === 'azure' ? 'TesseractOnly' : (selectedMethod === 'claude' ? 'ClaudeOnly' : 'Hybrid'),
     showToast: true,
   });
 
